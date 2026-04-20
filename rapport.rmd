@@ -1,0 +1,31 @@
+## 2 - Données simulées 
+
+```{r}
+a0<-round(runif(1,3,15),2)  
+b0<-round(runif(1,1,5),2)  
+s0<-round(runif(1,1,3),2)
+```
+
+### Q1a 
+
+Nous pouvons générer n aléatoirement de la même manière que les valeurs précèdentes (on considère la plage de valeurs possibles [200 ; 1000]) :
+
+```{r}
+n<- round(runif(1,20,100),0)
+x<- runif(n,0,5)
+```
+
+Ainsi x est un vecteur qui contient les réalisations des VA Xi, qui suivent une loi uniforme sur [0;5].
+
+### Q1b
+
+D'après la partie 1, nous savons que *Yi​=a+bxi​+ϵi​*. Cependant nous n'avons pas de valeur directe de **ϵi**. Or on a d'après l'énoncé :
+εi​∼N(0,σ²). Ainsi, dans le cas de notre simulation, εi​∼N(0,s0). Donc en R : 
+
+```{r}
+epsilon<- rnorm(n,0,s0)
+y<- a0 + b0*x + epsilon
+```
+
+```{r}
+```
