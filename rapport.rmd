@@ -27,5 +27,283 @@ epsilon<- rnorm(n,0,s0)
 y<- a0 + b0*x + epsilon
 ```
 
+### Q2
+
+Nous utilisons la fonction plot pour tracer les nuages de points (xi,yi). Pour ajouter une droite sur le même graphique nous utilisons la fonction abline. (qui permet de rejouter une droite sur un graphe.)
+
 ```{r}
+plot(x, y,
+     main = "(xi,yi) et droite de régression",
+     xlab = "x", ylab = "y")
+
+abline(a = a0, b = b0, col = "red")
+```
+
+### Q3 
+
+D'après l'énoncé, nous avons les expressions des estimateurs de vraissemblance de a, b et σ² suivantes :
+![alt text](image-1.png)
+
+Ainsi il nous suffit de créer ces fonctions grâce à nos simulations de x et y :
+
+```{r}
+b_estim <- function(x, y) {
+  # dans l'énoncé on a : SxY = sum((x - mean(x)) * (y - mean(y))) et SxX = sum((x - mean(x))^2) d'où la fonction ...
+  return (sum((x - mean(x)) * (y - mean(y))) / sum((x - mean(x))^2))
+}
+
+a_estim <- function(x, y) {
+  # On a également Y barre = mean(y) 
+  return(mean(y) - b_estim(x, y) * mean(x))
+}
+
+sigma_estim <- function(x, y) {
+  res <- y - a_estim(x, y) - b_estim(x, y) * x
+  return(sum(res^2) / n)
+}
+```
+
+### Q4 
+
+Pour obtenir une simulation de a, b et σ² à partir de notre jeu de données simulées, il suffit de calculer l'image des fonctions a_estim, b_estim et sigma_estime par x et y simulés. 
+
+```{r}
+b_estimé <- b_estim(x, y)
+a_estimé <- a_estim(x, y)
+s_estimé <- sigma_estim(x, y)
+
+print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =", a_estimé, "b_estimé =", b_estimé, "s_estimé =", s_estimé))
+```
+
+### Q5
+
+Nous rajoutons également une légende avec la fonction legend afin d'avoir plus de clareté sur notre graphique.
+
+```{r}
+plot(x, y,
+     main = "(xi,yi) et droite de régression",
+     xlab = "x", ylab = "y")
+
+abline(a = a0, b = b0, col = "red") #Droite y=a0+b0x
+
+abline(a = a_estimé, b = b_estimé, col = "blue") #Droite des moindres carrés 
+
+legend("topleft",
+       legend = c("Droite y = a0 + b0*x","Droite des moindres carrés"),
+       col = c("red", "blue"),
+       lty = c(1, 1))
+```
+
+### Q6 
+
+On a dans l'énoncé : ![alt text](image.png)
+Ainsi nous pouvons trouver le vecteur des résidus :
+
+```{r}
+y_moindre_carres <- a_estimé + b_estimé * x
+#D'où le vecteur des résidus suivant ...
+residus <- y - y_moindre_carres
+```
+
+Ainsi nous pouvosn vérifier la propriété des résidus de l'énoncé : 
+![alt text](image-2.png)
+
+```{r}
+somme_residus <- sum(residus)
+print(paste("La somme des résidus est donc égale à", somme_residus))
+somme_differences <- sum(y - y_moindre_carres)
+print(paste("La somme des différences est donc égale à", somme_differences))
+```
+
+On constate que les deux quantités sont égales, la **propriété des résidus est confirmée**.
+
+### Q7
+
+Vérifions dans un premier temps cette hypothèse graphiquement avec la fonction points qui nous permet de rajouter un point sur notre graphique :
+
+```{r}
+plot(x, y, 
+     main = "Vérification que (x̄, ȳ) est sur la droite des MCO",
+     xlab = "x", ylab = "y")
+
+# Droite des MCO
+abline(a = a_estim(x, y), b = b_estim(x, y), col = "blue", lwd = 2)
+
+# Point moyen (x̄, ȳ)
+points(mean(x), mean(y), col = "red")
+
+# Étiquette
+text(mean(x), mean(y), labels = "(x̄, ȳ)", pos = 3, col="red")
+```
+
+Nous constatosn graphiquement que (mean(x),mean(y)) **appartient à la droite des moindres carrés**. Nous pouvons aussi calculer y(mean(x)) et vérifier si cette quantité est égale à mean(y) :
+
+```{r}
+y_test <- a_estimé + b_estimé * mean(x)
+print(y_test)
+y_barre <- mean(y)
+print(y_barre)
+```
+
+On a bien y(mean(x)) = mean(y), donc nous confirmons que (mean(x),mean(y)) **appartient à la droite des moindres carrés**.
+
+### Q8
+
+
+Nous réalisons donc une régression linéqire avec le couple (x,y) ...
+
+```{r}
+donnees <- data.frame(varx = x, vary = y)
+reg<-lm(vary~varx, data = donnees)
+summary(reg)
+```
+
+On constate alors :
+- **Intercept (Estimate)** est l'estimation de a (a_estim)
+- **varx (Estimate)** est l'estimation de b (b_estim)
+- **Residual standard error** est l'estimation de sigma (sqrt(sigma_etim))
+
+### Q9
+
+Nous pouvons définir un vecteur de valeurs possibles pour n, que nous faisons prendre des valeurs de plus en plus grandes, puis pour chacune de ces valeurs nous prenon une réalisation simulée de x et y, et calculons les réalisations des estimations de a et de b associées. (Nous stockons chacune de ces valeurs dans un vecteur afin de pouvoir faire un graphique ultérieurement)
+
+```{r}
+tailles <- c(200,300,400,500,1000,1500,2000,3000,5000, 10000, 15000, 17000, 20000,25000, 50000,75000, 100000, 150000, 200000, 500000, 1000000)
+a_vals <- c()
+b_vals <- c()
+
+for (i in tailles) {
+  x_i <- runif(i, 0, 5)
+  y_i <- a0 + b0 * x_i + rnorm(i, 0, sqrt(s0))
+  a_vals <- c(a_vals, a_estim(x_i, y_i))  
+  b_vals <- c(b_vals, b_estim(x_i, y_i))
+}
+```
+
+Puis nous traçons les différentes valeurs de a estimées en fonctions de n, sur le même graphe on ajoute a0 afin demontre la convergence vers cette valeur :
+
+```{r}
+
+plot(tailles, a_vals, type = "l",
+     main = "Convergence de â vers a0",
+     xlab = "n", ylab = "â")
+abline(h = a0, col = "red")
+```
+
+On fait de même avec b :
+
+```{r}
+
+plot(tailles, b_vals, type = "l",
+     main = "Convergence de b̂ vers b0",
+     xlab = "n", ylab = "b̂")
+abline(h = b0, col = "red")
+```
+
+### Q10 
+
+En suivant les indications, nous choisissons **n=200**, enfin nous simulons 150 réalisations de 200 couples de (x,y), que nous stockons dans unu vecteur grâce à la fonction replicate (dont nosu avons recherché le focntionnement avec la commande ?replicate).
+
+De plus, nous calculons pour tout t une réalisation de l'estimateur de a, de même pour σ qui est égalament nécessaire pour le calcul demandé. Nous avons également besoin de mean(x) et sx :
+
+```{r}
+n_choisi <- 200
+simulations <- replicate(150, { #replicate va directement stocker nos résultats dans un vecteur 
+
+  x_sim <- runif(n_choisi, 0, 5)
+  y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
+
+  a_estim_sim <- a_estim(x_sim, y_sim)
+  sigma_estim_sim <- sigma_estim(x_sim, y_sim)
+
+  return((a_estim_sim - a0) / sqrt((sigma_estim_sim / n_choisi) * (1 + mean(x_sim)^2 / var(x_sim)))) #expression de l'énoncé qui sera directement stockée dans un vecteur grâce à la fonction replicate
+  
+})
+```
+
+Enfin nous traçons ces quantités sur le même graphe que la loi de student de degrès 198 :
+
+```{r}
+
+#On trace l'histogramme de la quantité simulée au cours des 150 simulations 
+
+hist(simulations, probability = TRUE,
+     main = "Convergence vers Student(n-2)",
+     xlab = "statistique", breaks = 20)
+
+# On ajoute la densité d'un loi de student de degrès 198
+curve(dt(x, df = 198), add = TRUE, col = "red")
+```
+
+**On constate graphiquement qu'il y a bien une convergence entre ces deux lois pour n=200**
+
+### Q11 
+
+D'après l'énoncé on a : ![alt text](image-3.png)
+
+Ainsi pour chaque calcul d'intervalle de confiance nous avosn besoins de fonction quantile de la loi du chi deux ainsi que celle de la loi de student, de la variance de X et des réalisations des estimateurs de a,b et sigma. Puis, en suivant simplement les formules, nous renvoyons un vecteur qui contient laplus petite valeur de l'estimateur (l'estimateur moins lamarge de confiance) et la plus grande (l'estimateur plus la marge de confiance) :
+
+```{r}
+
+# In tervalle de confiance pour a : 
+gen_IC_a <- function(x, y, alpha) {
+  a_est  <- a_estim(x, y)
+  sig_est <- sigma_estim(x, y)
+  varx     <- var(x)
+  #Fonction quantile de la loi de student
+  t_crit  <- qt(1 - alpha/2, df = n - 2)   
+  
+  marge <- t_crit * sqrt((sig_est / n) * (1 + mean(x)^2 / varx))
+  c(a_est - marge, a_est + marge)
+}
+
+gen_IC_b <- function(x, y, alpha) {
+  b_est   <- b_estim(x, y)
+  sig_est <- sigma_estim(x, y)
+  varx     <- var(x)
+  t_crit  <- qt(1 - alpha/2, df = n - 2)
+  
+  marge <- t_crit * sqrt(sig_est / (varx * n))
+  c(b_est - marge, b_est + marge)
+}
+
+gen_IC_s <- function(x, y, alpha) {
+  sig_est <- sigma_estim(x, y)
+  
+  # fonction quantile de la loi du Chi-deux
+  chi_inf <- qchisq(1 - alpha/2, df = n - 2)
+  chi_sup <- qchisq(alpha/2,     df = n - 2)
+  
+  c((n - 2) * sig_hat / chi_inf,
+    (n - 2) * sig_hat / chi_sup)
+}
+```
+
+### Q11
+
+Aucune valeur de alpha n'est précisée dans l'énoncé, nous décidonc alors de prendre alpha = 0.05 afin d'avoir une valeur nulérique pour chaque borne.
+
+```{r}
+alpha <- 0.05
+
+intervalles_a_vect <- replicate(100, {
+  x_sim <- runif(n_choisi, 0, 5)
+  y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
+  
+  gen_IC_a(x_sim, y_sim, alpha )
+})
+
+intervalles_b_vect <- replicate(100, {
+  x_sim <- runif(n_choisi, 0, 5)
+  y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
+  
+  gen_IC_b(x_sim, y_sim, alpha )
+})
+
+intervalles_s_vect <- replicate(100, {
+  x_sim <- runif(n_choisi, 0, 5)
+  y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
+  
+  gen_IC_s(x_sim, y_sim, alpha )
+})
 ```
