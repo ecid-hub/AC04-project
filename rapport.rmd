@@ -6,6 +6,7 @@ b0<-round(runif(1,1,5),2)
 s0<-round(runif(1,1,3),2)
 ```
 
+
 ### Q1a 
 
 Nous pouvons générer n aléatoirement de la même manière que les valeurs précèdentes (on considère la plage de valeurs possibles [200 ; 1000]) :
@@ -14,6 +15,7 @@ Nous pouvons générer n aléatoirement de la même manière que les valeurs pr�
 n<- round(runif(1,20,100),0)
 x<- runif(n,0,5)
 ```
+
 
 Ainsi x est un vecteur qui contient les réalisations des VA Xi, qui suivent une loi uniforme sur [0;5].
 
@@ -27,6 +29,7 @@ epsilon<- rnorm(n,0,s0)
 y<- a0 + b0*x + epsilon
 ```
 
+
 ### Q2
 
 Nous utilisons la fonction plot pour tracer les nuages de points (xi,yi). Pour ajouter une droite sur le même graphique nous utilisons la fonction abline. (qui permet de rejouter une droite sur un graphe.)
@@ -39,10 +42,14 @@ plot(x, y,
 abline(a = a0, b = b0, col = "red")
 ```
 
+
 ### Q3 
 
 D'après l'énoncé, nous avons les expressions des estimateurs de vraissemblance de a, b et σ² suivantes :
 ![alt text](image-1.png)
+
+
+Cependant l'énoncé nous précise que cet estimateur de σ² **est biaisé**, or on nous demande de donner un estimateur non biaisé !!! Ainsi pour estimer σ² nous utilisons l'autre formule donnée par l'énoncé : ![alt text](image-4.png)
 
 Ainsi il nous suffit de créer ces fonctions grâce à nos simulations de x et y :
 
@@ -58,10 +65,12 @@ a_estim <- function(x, y) {
 }
 
 sigma_estim <- function(x, y) {
+  n <- length(x)
   res <- y - a_estim(x, y) - b_estim(x, y) * x
-  return(sum(res^2) / n)
+  return(sum(res^2) / (n - 2))  
 }
 ```
+
 
 ### Q4 
 
@@ -74,6 +83,7 @@ s_estimé <- sigma_estim(x, y)
 
 print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =", a_estimé, "b_estimé =", b_estimé, "s_estimé =", s_estimé))
 ```
+
 
 ### Q5
 
@@ -94,6 +104,7 @@ legend("topleft",
        lty = c(1, 1))
 ```
 
+
 ### Q6 
 
 On a dans l'énoncé : ![alt text](image.png)
@@ -105,6 +116,7 @@ y_moindre_carres <- a_estimé + b_estimé * x
 residus <- y - y_moindre_carres
 ```
 
+
 Ainsi nous pouvosn vérifier la propriété des résidus de l'énoncé : 
 ![alt text](image-2.png)
 
@@ -114,6 +126,7 @@ print(paste("La somme des résidus est donc égale à", somme_residus))
 somme_differences <- sum(y - y_moindre_carres)
 print(paste("La somme des différences est donc égale à", somme_differences))
 ```
+
 
 On constate que les deux quantités sont égales, la **propriété des résidus est confirmée**.
 
@@ -136,6 +149,7 @@ points(mean(x), mean(y), col = "red")
 text(mean(x), mean(y), labels = "(x̄, ȳ)", pos = 3, col="red")
 ```
 
+
 Nous constatosn graphiquement que (mean(x),mean(y)) **appartient à la droite des moindres carrés**. Nous pouvons aussi calculer y(mean(x)) et vérifier si cette quantité est égale à mean(y) :
 
 ```{r}
@@ -144,6 +158,7 @@ print(y_test)
 y_barre <- mean(y)
 print(y_barre)
 ```
+
 
 On a bien y(mean(x)) = mean(y), donc nous confirmons que (mean(x),mean(y)) **appartient à la droite des moindres carrés**.
 
@@ -157,6 +172,7 @@ donnees <- data.frame(varx = x, vary = y)
 reg<-lm(vary~varx, data = donnees)
 summary(reg)
 ```
+
 
 On constate alors :
 - **Intercept (Estimate)** est l'estimation de a (a_estim)
@@ -180,6 +196,7 @@ for (i in tailles) {
 }
 ```
 
+
 Puis nous traçons les différentes valeurs de a estimées en fonctions de n, sur le même graphe on ajoute a0 afin demontre la convergence vers cette valeur :
 
 ```{r}
@@ -190,6 +207,7 @@ plot(tailles, a_vals, type = "l",
 abline(h = a0, col = "red")
 ```
 
+
 On fait de même avec b :
 
 ```{r}
@@ -199,6 +217,7 @@ plot(tailles, b_vals, type = "l",
      xlab = "n", ylab = "b̂")
 abline(h = b0, col = "red")
 ```
+
 
 ### Q10 
 
@@ -221,6 +240,7 @@ simulations <- replicate(150, { #replicate va directement stocker nos résultats
 })
 ```
 
+
 Enfin nous traçons ces quantités sur le même graphe que la loi de student de degrès 198 :
 
 ```{r}
@@ -234,6 +254,7 @@ hist(simulations, probability = TRUE,
 # On ajoute la densité d'un loi de student de degrès 198
 curve(dt(x, df = 198), add = TRUE, col = "red")
 ```
+
 
 **On constate graphiquement qu'il y a bien une convergence entre ces deux lois pour n=200**
 
@@ -274,12 +295,13 @@ gen_IC_s <- function(x, y, alpha) {
   chi_inf <- qchisq(1 - alpha/2, df = n - 2)
   chi_sup <- qchisq(alpha/2,     df = n - 2)
   
-  c((n - 2) * sig_hat / chi_inf,
-    (n - 2) * sig_hat / chi_sup)
+  c((n - 2) * sig_est / chi_inf,
+    (n - 2) * sig_est / chi_sup)
 }
 ```
 
-### Q11
+
+### Q12
 
 Aucune valeur de alpha n'est précisée dans l'énoncé, nous décidonc alors de prendre alpha = 0.05 afin d'avoir une valeur nulérique pour chaque borne.
 
@@ -307,3 +329,130 @@ intervalles_s_vect <- replicate(100, {
   gen_IC_s(x_sim, y_sim, alpha )
 })
 ```
+
+### Q13 
+
+On commence par sourcer le nouceau fichier auquel nous faisons référence ...
+
+```{r}
+source("utils.R")
+```
+
+Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précèdente ainsi que les paramètres rééls estimés donc ici a0, b0 et sigma0². Nous rajoutons également un titre afin de les différencier ...
+
+```{r}
+plot_ICs(intervalles_a_vect, mu = a0, main = "IC pour a")
+plot_ICs(intervalles_b_vect, mu = b0, main = "IC pour b")
+plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ²")
+```
+
+**Commentaire** :
+
+On remarque que pour les 3 coefficient, 100% des intervalles couvrent la valeur réélle du coefficient. Nous pouvions nous attendre à 95 % d'entre elles puisque nous avions pris alpha = 0.05. Cela paraît donc assez surprenant. Nous pouvons réessayer mais avec alpha = 0.5, dans ce cas nous devrions avoir à peu près 50% de rouge et 50% de vert, de même nous décidons d'augmenter le nombre d'intervalles calculées afin de réélement pouvoir voir une tendance se dessiner ...
+
+```{r}
+alpha <- 0.5
+
+intervalles_a_vect <- replicate(10000, {
+  x_sim <- runif(n_choisi, 0, 5)
+  y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
+  
+  gen_IC_a(x_sim, y_sim, alpha )
+})
+
+intervalles_b_vect <- replicate(10000, {
+  x_sim <- runif(n_choisi, 0, 5)
+  y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
+  
+  gen_IC_b(x_sim, y_sim, alpha )
+})
+
+intervalles_s_vect <- replicate(10000, {
+  x_sim <- runif(n_choisi, 0, 5)
+  y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
+  
+  gen_IC_s(x_sim, y_sim, alpha )
+})
+
+
+plot_ICs(intervalles_a_vect, mu = a0, main = "IC pour a avec alpha = 0.5")
+plot_ICs(intervalles_b_vect, mu = b0, main = "IC pour b avec alpha = 0.5")
+plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ² avec alpha = 0.5")
+```
+
+Dans ce cas, cela est plyus visuel, on voir bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
+
+
+### Q14
+
+Premièrement nous pouvons afficher les premières lignes du jeu de données anscombe afin de voir son nomre de colonnes etc ...
+
+```{r}
+head(anscombe)
+```
+
+On observe que ce jeu de données contient 4 *sous jeux* de données que nous pouvosn simplement tracer avec plot ... (de plus nous nous sommes renseignés sur anscombe avec lacommande ?anscombe)
+
+```{r}
+plot(anscombe$x1, anscombe$y1, main = "Graphique de (x1,y1)", xlab = "x1", ylab = "y1")
+plot(anscombe$x2, anscombe$y2, main = "Graphique de (x2,y2)", xlab = "x2", ylab = "y2")
+plot(anscombe$x3, anscombe$y3, main = "Graphique de (x3,y3)", xlab = "x3", ylab = "y3")
+plot(anscombe$x4, anscombe$y4, main = "Graphique de (x4,y4)", xlab = "x4", ylab = "y4")
+```
+
+### Q15 
+
+Nous nous servons de la fonction lm qui permet de faire une régression linéaire en R qui a été introduite en question 8. De même, nous décidons de tracer la droite  de régression linéaire afin de bien visualiser celle-ci et rendreplus aisée la discussion ...
+
+**Pour le premier jeu de données** : 
+
+```{r}
+donnees1 <- data.frame(varx = anscombe$x1, vary = anscombe$y1)
+reg1<-lm(vary~varx, data = donnees1)
+summary(reg1)
+
+plot(anscombe$x1, anscombe$y1, main = "Jeu 1", xlab="x1", ylab="y1")
+abline(reg1, col = "red")
+```
+
+Ici on constate que le régression linéaire est correcte et adaptée.
+
+**Pour le deuxième jeu de données** : 
+
+```{r}
+donnees2 <- data.frame(varx = anscombe$x2, vary = anscombe$y2)
+reg2<-lm(vary~varx, data = donnees2)
+summary(reg2)
+
+plot(anscombe$x2, anscombe$y2, main = "Jeu 2", xlab="x2", ylab="y2")
+abline(reg2, col = "red")
+```
+
+Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa fome en cloche, quadratique, qui rends la regression linéaire très peu adaptée.
+
+
+**Pour le troisième jeu de données** : 
+
+```{r}
+donnees3 <- data.frame(varx = anscombe$x3, vary = anscombe$y3)
+reg3<-lm(vary~varx, data = donnees3)
+summary(reg3)
+
+plot(anscombe$x3, anscombe$y3, main = "Jeu 3", xlab="x3", ylab="y3")
+abline(reg3, col = "red")
+```
+
+On constate ici que notre droite ne suit pas bien les données, à cause d'une valeur aberrante qui fausse complètement la pente de notre droite... Ainsi la regression linéaire ne paraît pas adaptée lorsque l'on a des valeurs aberrantes (à moins qu'il y en ai beaucoup ou qu'elles s'annulent il semble)
+
+**Pour le quatrième jeu de données** : 
+
+```{r}
+donnees4 <- data.frame(varx = anscombe$x4, vary = anscombe$y4)
+reg4<-lm(vary~varx, data = donnees4)
+summary(reg4)
+
+plot(anscombe$x4, anscombe$y4, main = "Jeu 4", xlab="x4", ylab="y4")
+abline(reg4, col = "red")
+```
+
+Ici on constate très rapidement que la forme horizontale du jeu de données n'est pas du tout cohérente avec la regrssion linéaire ....
