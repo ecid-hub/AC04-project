@@ -7,9 +7,10 @@ s0<-round(runif(1,1,3),2)
 ```
 
 
+
 ### Q1a 
 
-Nous pouvons générer n aléatoirement de la même manière que les valeurs précèdentes (on considère la plage de valeurs possibles [200 ; 1000]) :
+Nous pouvons générer n aléatoirement de la même manière que les valeurs précédentes (on considère la plage de valeurs possibles [200 ; 1000]) :
 
 ```{r}
 n<- round(runif(1,20,100),0)
@@ -17,17 +18,20 @@ x<- runif(n,0,5)
 ```
 
 
+
 Ainsi x est un vecteur qui contient les réalisations des VA Xi, qui suivent une loi uniforme sur [0;5].
+
 
 ### Q1b
 
-D'après la partie 1, nous savons que *Yi​=a+bxi​+ϵi​*. Cependant nous n'avons pas de valeur directe de **ϵi**. Or on a d'après l'énoncé :
-εi​∼N(0,σ²). Ainsi, dans le cas de notre simulation, εi​∼N(0,s0). Donc en R : 
+D'après la partie 1, nous savons que *$Y_i$​=a+b $x_i$​+ $ϵ_i$​*. Cependant nous n'avons pas de valeur directe de **$ϵ_i$**. Or on a d'après l'énoncé :
+$ϵ_i$​∼N(0,σ²). Ainsi, dans le cas de notre simulation, $ϵ_i$​∼N(0,$s_0$). Donc en R : 
 
 ```{r}
 epsilon<- rnorm(n,0,s0)
 y<- a0 + b0*x + epsilon
 ```
+
 
 
 ### Q2
@@ -41,6 +45,7 @@ plot(x, y,
 
 abline(a = a0, b = b0, col = "red")
 ```
+
 
 
 ### Q3 
@@ -72,6 +77,7 @@ sigma_estim <- function(x, y) {
 ```
 
 
+
 ### Q4 
 
 Pour obtenir une simulation de a, b et σ² à partir de notre jeu de données simulées, il suffit de calculer l'image des fonctions a_estim, b_estim et sigma_estime par x et y simulés. 
@@ -83,6 +89,7 @@ s_estimé <- sigma_estim(x, y)
 
 print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =", a_estimé, "b_estimé =", b_estimé, "s_estimé =", s_estimé))
 ```
+
 
 
 ### Q5
@@ -105,6 +112,7 @@ legend("topleft",
 ```
 
 
+
 ### Q6 
 
 On a dans l'énoncé : ![alt text](image.png)
@@ -117,6 +125,7 @@ residus <- y - y_moindre_carres
 ```
 
 
+
 Ainsi nous pouvosn vérifier la propriété des résidus de l'énoncé : 
 ![alt text](image-2.png)
 
@@ -126,6 +135,7 @@ print(paste("La somme des résidus est donc égale à", somme_residus))
 somme_differences <- sum(y - y_moindre_carres)
 print(paste("La somme des différences est donc égale à", somme_differences))
 ```
+
 
 
 On constate que les deux quantités sont égales, la **propriété des résidus est confirmée**.
@@ -150,6 +160,7 @@ text(mean(x), mean(y), labels = "(x̄, ȳ)", pos = 3, col="red")
 ```
 
 
+
 Nous constatosn graphiquement que (mean(x),mean(y)) **appartient à la droite des moindres carrés**. Nous pouvons aussi calculer y(mean(x)) et vérifier si cette quantité est égale à mean(y) :
 
 ```{r}
@@ -158,6 +169,7 @@ print(y_test)
 y_barre <- mean(y)
 print(y_barre)
 ```
+
 
 
 On a bien y(mean(x)) = mean(y), donc nous confirmons que (mean(x),mean(y)) **appartient à la droite des moindres carrés**.
@@ -172,6 +184,7 @@ donnees <- data.frame(varx = x, vary = y)
 reg<-lm(vary~varx, data = donnees)
 summary(reg)
 ```
+
 
 
 On constate alors :
@@ -197,6 +210,7 @@ for (i in tailles) {
 ```
 
 
+
 Puis nous traçons les différentes valeurs de a estimées en fonctions de n, sur le même graphe on ajoute a0 afin demontre la convergence vers cette valeur :
 
 ```{r}
@@ -208,6 +222,7 @@ abline(h = a0, col = "red")
 ```
 
 
+
 On fait de même avec b :
 
 ```{r}
@@ -217,6 +232,7 @@ plot(tailles, b_vals, type = "l",
      xlab = "n", ylab = "b̂")
 abline(h = b0, col = "red")
 ```
+
 
 
 ### Q10 
@@ -241,6 +257,7 @@ simulations <- replicate(150, { #replicate va directement stocker nos résultats
 ```
 
 
+
 Enfin nous traçons ces quantités sur le même graphe que la loi de student de degrès 198 :
 
 ```{r}
@@ -254,6 +271,7 @@ hist(simulations, probability = TRUE,
 # On ajoute la densité d'un loi de student de degrès 198
 curve(dt(x, df = 198), add = TRUE, col = "red")
 ```
+
 
 
 **On constate graphiquement qu'il y a bien une convergence entre ces deux lois pour n=200**
@@ -301,6 +319,7 @@ gen_IC_s <- function(x, y, alpha) {
 ```
 
 
+
 ### Q12
 
 Aucune valeur de alpha n'est précisée dans l'énoncé, nous décidonc alors de prendre alpha = 0.05 afin d'avoir une valeur nulérique pour chaque borne.
@@ -330,6 +349,7 @@ intervalles_s_vect <- replicate(100, {
 })
 ```
 
+
 ### Q13 
 
 On commence par sourcer le nouceau fichier auquel nous faisons référence ...
@@ -338,6 +358,7 @@ On commence par sourcer le nouceau fichier auquel nous faisons référence ...
 source("utils.R")
 ```
 
+
 Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précèdente ainsi que les paramètres rééls estimés donc ici a0, b0 et sigma0². Nous rajoutons également un titre afin de les différencier ...
 
 ```{r}
@@ -345,6 +366,7 @@ plot_ICs(intervalles_a_vect, mu = a0, main = "IC pour a")
 plot_ICs(intervalles_b_vect, mu = b0, main = "IC pour b")
 plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ²")
 ```
+
 
 **Commentaire** :
 
@@ -380,6 +402,7 @@ plot_ICs(intervalles_b_vect, mu = b0, main = "IC pour b avec alpha = 0.5")
 plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ² avec alpha = 0.5")
 ```
 
+
 Dans ce cas, cela est plyus visuel, on voir bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
 
 
@@ -391,6 +414,7 @@ Premièrement nous pouvons afficher les premières lignes du jeu de données ans
 head(anscombe)
 ```
 
+
 On observe que ce jeu de données contient 4 *sous jeux* de données que nous pouvosn simplement tracer avec plot ... (de plus nous nous sommes renseignés sur anscombe avec lacommande ?anscombe)
 
 ```{r}
@@ -399,6 +423,7 @@ plot(anscombe$x2, anscombe$y2, main = "Graphique de (x2,y2)", xlab = "x2", ylab 
 plot(anscombe$x3, anscombe$y3, main = "Graphique de (x3,y3)", xlab = "x3", ylab = "y3")
 plot(anscombe$x4, anscombe$y4, main = "Graphique de (x4,y4)", xlab = "x4", ylab = "y4")
 ```
+
 
 ### Q15 
 
@@ -415,6 +440,7 @@ plot(anscombe$x1, anscombe$y1, main = "Jeu 1", xlab="x1", ylab="y1")
 abline(reg1, col = "red")
 ```
 
+
 Ici on constate que le régression linéaire est correcte et adaptée.
 
 **Pour le deuxième jeu de données** : 
@@ -427,6 +453,7 @@ summary(reg2)
 plot(anscombe$x2, anscombe$y2, main = "Jeu 2", xlab="x2", ylab="y2")
 abline(reg2, col = "red")
 ```
+
 
 Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa fome en cloche, quadratique, qui rends la regression linéaire très peu adaptée.
 
@@ -442,6 +469,7 @@ plot(anscombe$x3, anscombe$y3, main = "Jeu 3", xlab="x3", ylab="y3")
 abline(reg3, col = "red")
 ```
 
+
 On constate ici que notre droite ne suit pas bien les données, à cause d'une valeur aberrante qui fausse complètement la pente de notre droite... Ainsi la regression linéaire ne paraît pas adaptée lorsque l'on a des valeurs aberrantes (à moins qu'il y en ai beaucoup ou qu'elles s'annulent il semble)
 
 **Pour le quatrième jeu de données** : 
@@ -454,5 +482,6 @@ summary(reg4)
 plot(anscombe$x4, anscombe$y4, main = "Jeu 4", xlab="x4", ylab="y4")
 abline(reg4, col = "red")
 ```
+
 
 Ici on constate très rapidement que la forme horizontale du jeu de données n'est pas du tout cohérente avec la regrssion linéaire ....
