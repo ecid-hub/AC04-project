@@ -8,6 +8,7 @@ s0<-round(runif(1,1,3),2)
 
 
 
+
 ### Q1a 
 
 Nous pouvons générer n aléatoirement de la même manière que les valeurs précédentes (on considère la plage de valeurs possibles [200 ; 1000]) :
@@ -16,6 +17,7 @@ Nous pouvons générer n aléatoirement de la même manière que les valeurs pr�
 n<- round(runif(1,20,100),0)
 x<- runif(n,0,5)
 ```
+
 
 
 
@@ -34,6 +36,7 @@ y<- a0 + b0*x + epsilon
 
 
 
+
 ### Q2
 
 Nous utilisons la fonction plot pour tracer les nuages de points (xi,yi). Pour ajouter une droite sur le même graphique nous utilisons la fonction abline. (qui permet de rejouter une droite sur un graphe.)
@@ -45,6 +48,7 @@ plot(x, y,
 
 abline(a = a0, b = b0, col = "red")
 ```
+
 
 
 
@@ -78,6 +82,7 @@ sigma_estim <- function(x, y) {
 
 
 
+
 ### Q4 
 
 Pour obtenir une simulation de a, b et σ² à partir de notre jeu de données simulées, il suffit de calculer l'image des fonctions a_estim, b_estim et sigma_estime par x et y simulés. 
@@ -89,6 +94,7 @@ s_estimé <- sigma_estim(x, y)
 
 print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =", a_estimé, "b_estimé =", b_estimé, "s_estimé =", s_estimé))
 ```
+
 
 
 
@@ -113,6 +119,7 @@ legend("topleft",
 
 
 
+
 ### Q6 
 
 On a dans l'énoncé : ![alt text](image.png)
@@ -126,6 +133,7 @@ residus <- y - y_moindre_carres
 
 
 
+
 Ainsi nous pouvosn vérifier la propriété des résidus de l'énoncé : 
 ![alt text](image-2.png)
 
@@ -135,6 +143,7 @@ print(paste("La somme des résidus est donc égale à", somme_residus))
 somme_differences <- sum(y - y_moindre_carres)
 print(paste("La somme des différences est donc égale à", somme_differences))
 ```
+
 
 
 
@@ -161,6 +170,7 @@ text(mean(x), mean(y), labels = "(x̄, ȳ)", pos = 3, col="red")
 
 
 
+
 Nous constatosn graphiquement que (mean(x),mean(y)) **appartient à la droite des moindres carrés**. Nous pouvons aussi calculer y(mean(x)) et vérifier si cette quantité est égale à mean(y) :
 
 ```{r}
@@ -169,6 +179,7 @@ print(y_test)
 y_barre <- mean(y)
 print(y_barre)
 ```
+
 
 
 
@@ -184,6 +195,7 @@ donnees <- data.frame(varx = x, vary = y)
 reg<-lm(vary~varx, data = donnees)
 summary(reg)
 ```
+
 
 
 
@@ -211,6 +223,7 @@ for (i in tailles) {
 
 
 
+
 Puis nous traçons les différentes valeurs de a estimées en fonctions de n, sur le même graphe on ajoute a0 afin demontre la convergence vers cette valeur :
 
 ```{r}
@@ -223,6 +236,7 @@ abline(h = a0, col = "red")
 
 
 
+
 On fait de même avec b :
 
 ```{r}
@@ -232,6 +246,7 @@ plot(tailles, b_vals, type = "l",
      xlab = "n", ylab = "b̂")
 abline(h = b0, col = "red")
 ```
+
 
 
 
@@ -258,6 +273,7 @@ simulations <- replicate(150, { #replicate va directement stocker nos résultats
 
 
 
+
 Enfin nous traçons ces quantités sur le même graphe que la loi de student de degrès 198 :
 
 ```{r}
@@ -271,6 +287,7 @@ hist(simulations, probability = TRUE,
 # On ajoute la densité d'un loi de student de degrès 198
 curve(dt(x, df = 198), add = TRUE, col = "red")
 ```
+
 
 
 
@@ -320,6 +337,7 @@ gen_IC_s <- function(x, y, alpha) {
 
 
 
+
 ### Q12
 
 Aucune valeur de alpha n'est précisée dans l'énoncé, nous décidonc alors de prendre alpha = 0.05 afin d'avoir une valeur nulérique pour chaque borne.
@@ -350,6 +368,7 @@ intervalles_s_vect <- replicate(100, {
 ```
 
 
+
 ### Q13 
 
 On commence par sourcer le nouceau fichier auquel nous faisons référence ...
@@ -359,6 +378,7 @@ source("utils.R")
 ```
 
 
+
 Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précèdente ainsi que les paramètres rééls estimés donc ici a0, b0 et sigma0². Nous rajoutons également un titre afin de les différencier ...
 
 ```{r}
@@ -366,6 +386,7 @@ plot_ICs(intervalles_a_vect, mu = a0, main = "IC pour a")
 plot_ICs(intervalles_b_vect, mu = b0, main = "IC pour b")
 plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ²")
 ```
+
 
 
 **Commentaire** :
@@ -403,6 +424,7 @@ plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ² avec alpha = 0.5")
 ```
 
 
+
 Dans ce cas, cela est plyus visuel, on voir bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
 
 
@@ -415,6 +437,7 @@ head(anscombe)
 ```
 
 
+
 On observe que ce jeu de données contient 4 *sous jeux* de données que nous pouvosn simplement tracer avec plot ... (de plus nous nous sommes renseignés sur anscombe avec lacommande ?anscombe)
 
 ```{r}
@@ -423,6 +446,7 @@ plot(anscombe$x2, anscombe$y2, main = "Graphique de (x2,y2)", xlab = "x2", ylab 
 plot(anscombe$x3, anscombe$y3, main = "Graphique de (x3,y3)", xlab = "x3", ylab = "y3")
 plot(anscombe$x4, anscombe$y4, main = "Graphique de (x4,y4)", xlab = "x4", ylab = "y4")
 ```
+
 
 
 ### Q15 
@@ -441,6 +465,7 @@ abline(reg1, col = "red")
 ```
 
 
+
 Ici on constate que le régression linéaire est correcte et adaptée.
 
 **Pour le deuxième jeu de données** : 
@@ -453,6 +478,7 @@ summary(reg2)
 plot(anscombe$x2, anscombe$y2, main = "Jeu 2", xlab="x2", ylab="y2")
 abline(reg2, col = "red")
 ```
+
 
 
 Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa fome en cloche, quadratique, qui rends la regression linéaire très peu adaptée.
@@ -470,6 +496,7 @@ abline(reg3, col = "red")
 ```
 
 
+
 On constate ici que notre droite ne suit pas bien les données, à cause d'une valeur aberrante qui fausse complètement la pente de notre droite... Ainsi la regression linéaire ne paraît pas adaptée lorsque l'on a des valeurs aberrantes (à moins qu'il y en ai beaucoup ou qu'elles s'annulent il semble)
 
 **Pour le quatrième jeu de données** : 
@@ -484,4 +511,106 @@ abline(reg4, col = "red")
 ```
 
 
-Ici on constate très rapidement que la forme horizontale du jeu de données n'est pas du tout cohérente avec la regrssion linéaire ....
+
+Ici on constate très rapidement que la forme horizontale du jeu de données n'est pas du tout cohérente avec la regression linéaire ....
+
+### Q16
+
+Ici on peut reprendre nos régressions linéaires reg1, reg2, reg3, et reg4 
+
+```{r}
+models <- list(reg1, reg2, reg3, reg4)
+titres <- paste("Anscombe", 1:4)
+
+
+
+par(mfrow = c(4, 3), mar = c(4, 4, 3, 1))
+
+
+# On commence par faire une boucle sur tous les modèles à tester 
+for (i in 1:4) {
+  mod <- models[[i]]
+  
+  res_std  <- rstandard(mod)    
+  res_corr <- residuals(mod) / sqrt(1 - hatvalues(mod))  # résidus corrigés ε̃
+  fitted   <- fitted.values(mod)
+  x_vals   <- anscombe[[paste0("x", i)]]
+
+  # On commence par tracer les graphiques avec les résidus corrigés 
+         main = paste(titres[i], "– QQ-plot résidus corrigés"),
+         pch = 19, col = "steelblue")
+  qqline(res_corr, col = "red", lwd = 2)
+
+  # Puis les résidus standardisés vs valeurs ajustées 
+  plot(fitted, res_std,
+       main = paste(titres[i], "– Résidus std vs ŷ"),
+       xlab = "Valeurs ajustées (ŷ)",
+       ylab = "Résidus standardisés",
+       pch = 19, col = "steelblue")
+  abline(h = 0, col = "red", lty = 2)
+
+  # et enfin les résidus standardisés vs variable explicative 
+  plot(x_vals, res_std,
+       main = paste(titres[i], "– Résidus std vs x"),
+       xlab = "x",
+       ylab = "Résidus standardisés",
+       pch = 19, col = "steelblue")
+  abline(h = 0, col = "red", lty = 2)
+}
+```
+
+**Résultats Partie 1 :** 
+Indépendance : les résidus vs x ne montrent aucune structure, les erreurs semblent indépendantes.
+Normalité  : les points du QQ-plot sont alignés sur la droite, les erreurs suivent bien une loi normale.
+Homoscédasticité : les résidus vs ŷ sont dispersés uniformément autour de 0, la variance est constante.
+Donc les 3 hypothèses (H) sont satisfaites, la régression linéaire est valide.
+
+**Résultats Partie 2 :** 
+Indépendance : les résidus vs x suivent une courbe en U, les erreurs sont systématiques, elles ne sont pas indépendantes.
+Normalité : le QQ-plot dévie en U, les erreurs ne suivent pas une loi normale.
+Homoscédasticité : la variance des résidus n'est pas constante, elle dépend de x.
+Donc les 3 hypothèses sont violées : la relation est quadratique, pas linéaire.
+
+**Résultats Partie 3 :**
+Indépendance : difficile à conclure à cause de la valeur aberrante qui domine l'analyse.
+Normalité : le QQ-plot montre un point très éloigné de la droite, présence d'une valeur aberrante, la normalité est violée.
+Homoscédasticité : la variance paraît constante si on exclut la valeur aberrante, mais ce dernier la perturbe fortement.
+Donc la normalité est violée à cause d'un point aberrant qui influence fortement l'estimation.
+
+
+**Résultats Partie 4 :**
+Indépendance : x est quasi-constant (sauf un point), il n'y a pas de vraie relation à modéliser.
+Normalité : le QQ-plot est inexploitable, quasiment tous les résidus sont nuls sauf un.
+Homoscédasticité  : la variance des résidus est nulle partout sauf en un point, variance non constante.
+Donc les 3 hypothèses sont violées, la régression n'a pas de sens ici.
+
+### Q17 
+
+Nous choisissons de travailler avec le jeu de données hapiness.csv. Nous commencons par observer les différentes données de ce jeu ...
+
+```{r}
+Real_Data <- read.csv("happiness_csv.csv")        
+head(Real_Data)  
+```
+
+Afin de trouver une paire qui nous convienne, nous pouvons déjà exclure les colonnes qui ne sont pas numériques. Enfin, nous devons également chercher des données qui sont liées entre elles... Pou rl'instant  une paire assez est : x = Economy..GDP.per.Capita. et y = Happiness.Score
+On s'attend à ce qu'un PIB plus élevé soit associé à un score de bonheur plus élevé.
+
+Nous allons nous en assurer graphiquement...
+
+```{r}
+# On trace le nuage de points
+plot(Real_Data$Economy..GDP.per.Capita., Real_Data$Happiness.Score,
+     xlab = "PIB par habitant",
+     ylab = "Score de bonheur",
+     main = "Bonheur en fonction du PIB par habitant",
+     pch = 19, col = "steelblue")
+
+#On calcule le coefficient de corrélation
+r <- cor(Real_Data$Economy..GDP.per.Capita., Real_Data$Happiness.Score,
+         use = "complete.obs")
+cat("Coefficient de corrélation r =", round(r, 3), "\n")
+```
+
+On observe un coefficient de corrélation r= 0,78. Ainsi il y a uneforte corrlation entre ces données, qui est confirmée graphiquement.
+Nous choisissons donc le PIB et le Happiness score comme paire de données.
