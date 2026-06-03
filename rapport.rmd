@@ -49,7 +49,7 @@ y<- a0 + b0*x + epsilon
 
 ### Q2
 
-Nous utilisons la fonction plot pour tracer les nuages de points (xi,yi). Pour ajouter une droite sur le même graphique nous utilisons la fonction abline. (qui permet de rejouter une droite sur un graphe.)
+Nous utilisons la fonction plot pour tracer les nuages de points (xi,yi). Pour ajouter une droite sur le même graphique nous utilisons la fonction abline. (qui permet de rajouter une droite sur un graphe.)
 
 ```{r}
 plot(x, y,
@@ -105,7 +105,7 @@ sigma_estim <- function(x, y) {
 
 ### Q4 
 
-Pour obtenir une simulation de a, b et σ² à partir de notre jeu de données simulées, il suffit de calculer l'image des fonctions a_estim, b_estim et sigma_estime par x et y simulés. 
+Pour obtenir une simulation de a, b et σ² à partir de notre jeu de données simulé, il suffit de calculer l'image des fonctions a_estim, b_estim et sigma_estime par x et y simulés. 
 
 ```{r}
 b_estimé <- b_estim(x, y)
@@ -123,7 +123,7 @@ print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =",
 
 ### Q5
 
-Nous rajoutons également une légende avec la fonction legend afin d'avoir plus de clareté sur notre graphique.
+Nous rajoutons également une légende avec la fonction legend afin d'avoir plus de clarté sur notre graphique.
 
 ```{r}
 plot(x, y,
@@ -153,7 +153,8 @@ Ainsi nous pouvons trouver le vecteur des résidus :
 
 ```{r}
 y_moindre_carres <- a_estimé + b_estimé * x
-#D'où le vecteur des résidus suivant ...
+
+#D'où le vecteur des résidus suivant :
 residus <- y - y_moindre_carres
 ```
 
@@ -240,7 +241,8 @@ On constate alors :
 
 ### Q9
 
-Nous pouvons définir un vecteur de valeurs possibles pour n, que nous faisons prendre des valeurs de plus en plus grandes, puis pour chacune de ces valeurs nous prenon une réalisation simulée de x et y, et calculons les réalisations des estimations de a et de b associées. (Nous stockons chacune de ces valeurs dans un vecteur afin de pouvoir faire un graphique ultérieurement)
+Nous pouvons définir un vecteur de valeurs possibles pour n, que nous faisons prendre des valeurs de plus en plus grandes, puis pour chacune de ces valeurs nous prenon une réalisation simulée de x et y, et calculons les réalisations des estimations de a et de b associées. 
+Nous stockons chacune de ces valeurs dans un vecteur afin de pouvoir faire un graphique ultérieurement.
 
 ```{r}
 tailles <- c(
@@ -301,9 +303,9 @@ Grâce aux deux graphiques, on peut bien voir que quand n est grand, les estimat
 
 ### Q10 
 
-En suivant les indications, nous choisissons **n=200**, enfin nous simulons 150 réalisations de 200 couples de (x,y), que nous stockons dans unu vecteur grâce à la fonction replicate (dont nosu avons recherché le focntionnement avec la commande ?replicate).
+En suivant les indications, nous choisissons **n=200**, enfin nous simulons 150 réalisations de 200 couples de (x,y), que nous stockons dans un vecteur grâce à la fonction replicate (dont nous avons vérifié le fonctionnement avec la commande ?replicate).
 
-De plus, nous calculons pour tout t une réalisation de l'estimateur de a, de même pour σ qui est égalament nécessaire pour le calcul demandé. Nous avons également besoin de mean(x) et sx :
+De plus, nous calculons pour tout t une réalisation de l'estimateur de a. De même pour σ, qui est également nécessaire pour le calcul demandé. Nous avons également besoin de mean(x) et sx :
 
 ```{r}
 n_choisi <- 200
@@ -316,28 +318,23 @@ simulations <- replicate(150, { #replicate va directement stocker nos résultats
   sigma_estim_sim <- sigma_estim(x_sim, y_sim)
 
   return((a_estim_sim - a0) / sqrt((sigma_estim_sim / n_choisi) * (1 + mean(x_sim)^2 / (mean(x_sim^2) - mean(x_sim)^2)))) #expression de l'énoncé qui sera directement stockée dans un vecteur grâce à la fonction replicate
-  #je crois qu'il faut pas utiliser var(x_sim) mais plutôt la var corrigée donc  mean(x_sim^2) - mean(x_sim)^2
 })
 ```
 
-
-
-
-
-
-
-Enfin nous traçons ces quantités sur le même graphe que la loi de student de degrès 198 :
+Enfin nous traçons ces quantités sur le même graphe que la loi de student de degrés n_choisi-2 :
 
 ```{r}
-
-#On trace l'histogramme de la quantité simulée au cours des 150 simulations 
-
 hist(simulations, probability = TRUE,
      main = "Convergence vers Student(n-2)",
      xlab = "statistique", breaks = 20)
 
-# On ajoute la densité d'un loi de student de degrès 198
-curve(dt(x, df = 198), add = TRUE, col = "red")
+# On ajoute la densité d'une loi de student de degrés n_choisi-2
+curve(dt(x, df = n_choisi-2), add = TRUE, col = "red")
+
+legend("topright",
+       legend = c("Histogramme des simulations", "Densité de la loi de Student(n-2)"),
+       col = c("black", "red"),
+       lty = c(1, 1))
 ```
 
 
@@ -352,11 +349,10 @@ curve(dt(x, df = 198), add = TRUE, col = "red")
 
 D'après l'énoncé on a : ![alt text](image-3.png)
 
-Ainsi pour chaque calcul d'intervalle de confiance nous avosn besoins de fonction quantile de la loi du chi deux ainsi que celle de la loi de student, de la variance de X et des réalisations des estimateurs de a,b et sigma. Puis, en suivant simplement les formules, nous renvoyons un vecteur qui contient laplus petite valeur de l'estimateur (l'estimateur moins lamarge de confiance) et la plus grande (l'estimateur plus la marge de confiance) :
+Ainsi pour chaque calcul d'intervalle de confiance nous avons besoins des fonctions quantiles de la loi du chi deux et de la loi de student, de la variance de X et des réalisations des estimateurs de a,b et sigma. Puis, en suivant simplement les formules, nous renvoyons un vecteur qui contient la plus petite valeur de l'estimateur (l'estimateur moins la marge de confiance) et la plus grande (l'estimateur plus la marge de confiance) :
 
 ```{r}
-
-# In tervalle de confiance pour a : 
+# Intervalle de confiance pour a : 
 gen_IC_a <- function(x, y, alpha) {
    n <- length(x)
   a_est  <- a_estim(x, y)
@@ -393,16 +389,9 @@ gen_IC_s <- function(x, y, alpha) {
 }
 ```
 
-
-
-
-
-
-
-
 ### Q12
 
-Aucune valeur de alpha n'est précisée dans l'énoncé, nous décidonc alors de prendre alpha = 0.05 afin d'avoir une valeur nulérique pour chaque borne.
+Aucune valeur d'alpha n'est précisée dans l'énoncé, nous décidons alors de prendre alpha = 0.05 afin d'avoir une valeur numérique pour chaque borne.
 
 ```{r}
 alpha <- 0.05
@@ -447,7 +436,7 @@ source("utils.R")
 
 
 
-Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précèdente ainsi que les paramètres rééls estimés donc ici a0, b0 et sigma0². Nous rajoutons également un titre afin de les différencier ...
+Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précédente ainsi que les paramètres rééls estimés donc ici a0, b0 et sigma0². Nous rajoutons également un titre afin de les différencier.
 
 ```{r}
 plot_ICs(intervalles_a_vect, mu = a0, main = "IC pour a")
@@ -499,7 +488,7 @@ plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ² avec alpha = 0.5")
 
 
 
-Dans ce cas, cela est plyus visuel, on voir bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
+Dans ce cas, cela est plus visuel, on voit bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
 
 
 ### Q14
@@ -515,7 +504,7 @@ head(anscombe)
 
 
 
-On observe que ce jeu de données contient 4 *sous jeux* de données que nous pouvosn simplement tracer avec plot ... (de plus nous nous sommes renseignés sur anscombe avec lacommande ?anscombe)
+On observe que ce jeu de données contient 4 *sous jeux* de données que nous pouvons simplement tracer avec plot. De plus nous nous sommes renseignés sur anscombe avec la commande ?anscombe.
 
 ```{r}
 plot(anscombe$x1, anscombe$y1, main = "Graphique de (x1,y1)", xlab = "x1", ylab = "y1")
@@ -567,7 +556,7 @@ abline(reg2, col = "red")
 
 
 
-Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa fome en cloche, quadratique, qui rends la regression linéaire très peu adaptée.
+Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa forme en cloche, quadratique, qui rend la regression linéaire très peu adaptée.
 
 
 **Pour le troisième jeu de données** : 
@@ -694,7 +683,7 @@ head(real_data)
 
 
 
-Afin de trouver une paire qui nous convienne, nous pouvons déjà exclure les colonnes qui ne sont pas numériques. Enfin, nous devons également chercher des données qui sont liées entre elles... Pou rl'instant  une paire assez est : x = Economy..GDP.per.Capita. et y = Happiness.Score
+Afin de trouver une paire qui nous convienne, nous pouvons déjà exclure les colonnes qui ne sont pas numériques. Enfin, nous devons également chercher des données qui sont liées entre elles... Pour l'instant une paire assez est : x = Economy..GDP.per.Capita. et y = Happiness.Score
 On s'attend à ce qu'un PIB plus élevé soit associé à un score de bonheur plus élevé.
 
 Nous allons nous en assurer graphiquement...
