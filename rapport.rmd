@@ -10,6 +10,8 @@ s0<-round(runif(1,1,3),2)
 
 
 
+
+
 ### Q1a 
 
 Nous pouvons générer n aléatoirement de la même manière que les valeurs précédentes (on considère la plage de valeurs possibles [200 ; 1000] # ici tu donnes un nombre entre 20 et 100 pas entre 200 et 1000) :
@@ -18,6 +20,10 @@ Nous pouvons générer n aléatoirement de la même manière que les valeurs pr�
 n<- round(runif(1,20,100),0)
 x<- runif(n,0,5)
 ```
+
+
+
+
 
 
 Ainsi x est un vecteur qui contient les réalisations des VA Xi, qui suivent une loi uniforme sur [0;5].
@@ -36,6 +42,8 @@ y<- a0 + b0*x + epsilon
 
 
 
+
+
 ### Q2
 
 Nous utilisons la fonction plot pour tracer les nuages de points (xi,yi). Pour ajouter une droite sur le même graphique nous utilisons la fonction abline. (qui permet de rejouter une droite sur un graphe.)
@@ -47,6 +55,8 @@ plot(x, y,
 
 abline(a = a0, b = b0, col = "red")
 ```
+
+
 
 
 
@@ -86,6 +96,8 @@ sigma_estim <- function(x, y) {
 
 
 
+
+
 ### Q4 
 
 Pour obtenir une simulation de a, b et σ² à partir de notre jeu de données simulées, il suffit de calculer l'image des fonctions a_estim, b_estim et sigma_estime par x et y simulés. 
@@ -97,6 +109,8 @@ s_estimé <- sigma_estim(x, y)
 
 print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =", a_estimé, "b_estimé =", b_estimé, "s_estimé =", s_estimé))
 ```
+
+
 
 
 
@@ -123,6 +137,8 @@ legend("topleft",
 
 
 
+
+
 ### Q6 
 
 On a dans l'énoncé : ![alt text](image.png)
@@ -136,6 +152,9 @@ residus <- y - y_moindre_carres
 
 
 
+
+
+
 Ainsi nous pouvons vérifier la propriété des résidus de l'énoncé : 
 ![alt text](image-2.png)
 
@@ -144,7 +163,12 @@ somme_residus <- sum(residus)
 print(paste("La somme des résidus est donc égale à", somme_residus))
 somme_differences <- sum(y - y_moindre_carres)
 print(paste("La somme des différences est donc égale à", somme_differences))
+print("Le tout est environ égal à 0, ce qui confirme que la somme des résidus est égale à 0.")
 ```
+
+
+
+
 
 
 On constate que les deux quantités sont égales, la **propriété des résidus est confirmée**.
@@ -169,9 +193,7 @@ text(mean(x), mean(y), labels = "(x̄, ȳ)", pos = 3, col="red")
 ```
 
 
-
-
-Nous constatons graphiquement que (mean(x),mean(y)) **appartient à la droite des moindres carrés**. Nous pouvons aussi calculer y(mean(x)) et vérifier si cette quantité est égale à mean(y) :
+Nous constatons graphiquement que (x̄,ȳ) **appartient à la droite des moindres carrés**. Nous pouvons aussi calculer y(x̄) et vérifier si cette quantité est égale à ȳ :
 
 ```{r}
 y_test <- a_estimé + b_estimé * mean(x)
@@ -179,15 +201,7 @@ print(y_test)
 y_barre <- mean(y)
 print(y_barre)
 
-#j'aurais rajouté ça
-print("ȳ            =", round(mean(y), 8), "\n")
-print("â + b̂·x̄    =", y_test, "\n")
-print("Différence   =", abs(mean(y) - y_test), "\n")   # ≈ 0
-```
-
-
-
-On a bien y(mean(x)) = mean(y), donc nous confirmons que (mean(x),mean(y)) **appartient à la droite des moindres carrés**.
+On a bien y(x̄) = ȳ, donc nous confirmons que (x̄,ȳ) **appartient à la droite des moindres carrés**.
 
 ### Q8
 
@@ -199,6 +213,10 @@ donnees <- data.frame(varx = x, vary = y)
 reg<-lm(vary~varx, data = donnees)
 summary(reg)
 ```
+
+
+
+
 
 
 On constate alors :
@@ -213,7 +231,13 @@ On constate alors :
 Nous pouvons définir un vecteur de valeurs possibles pour n, que nous faisons prendre des valeurs de plus en plus grandes, puis pour chacune de ces valeurs nous prenon une réalisation simulée de x et y, et calculons les réalisations des estimations de a et de b associées. (Nous stockons chacune de ces valeurs dans un vecteur afin de pouvoir faire un graphique ultérieurement)
 
 ```{r}
-tailles <- c(200,300,400,500,1000,1500,2000,3000,5000, 10000, 15000, 17000, 20000,25000, 50000,75000, 100000, 150000, 200000, 500000, 1000000)
+tailles <- c(
+  50, 75, 100, 125, 150, 175, 200, 250, 300, 350, 400, 450, 500,
+  600, 700, 800, 900, 1000, 1250, 1500, 1750, 2000, 2500, 3000,
+  4000, 5000, 6000, 7000, 8000, 9000, 10000, 12500, 15000, 17500,
+  20000, 25000, 30000, 40000, 50000, 75000, 100000, 150000, 200000,
+  500000, 1000000
+)
 a_vals <- c()
 b_vals <- c()
 
@@ -224,6 +248,8 @@ for (i in tailles) {
   b_vals <- c(b_vals, b_estim(x_i, y_i))
 }
 ```
+
+
 
 
 
@@ -241,6 +267,8 @@ abline(h = a0, col = "red")
 
 
 
+
+
 On fait de même avec b :
 
 ```{r}
@@ -251,7 +279,9 @@ plot(tailles, b_vals, type = "l",
 abline(h = b0, col = "red")
 ```
 
+
 #maybe rajouter un commentaire sur ce qu'on observe ?
+
 
 
 ### Q10 
@@ -278,6 +308,8 @@ simulations <- replicate(150, { #replicate va directement stocker nos résultats
 
 
 
+
+
 Enfin nous traçons ces quantités sur le même graphe que la loi de student de degrès 198 :
 
 ```{r}
@@ -291,6 +323,8 @@ hist(simulations, probability = TRUE,
 # On ajoute la densité d'un loi de student de degrès 198
 curve(dt(x, df = 198), add = TRUE, col = "red")
 ```
+
+
 
 
 
@@ -347,6 +381,8 @@ gen_IC_s <- function(x, y, alpha) {
 
 
 
+
+
 ### Q12
 
 Aucune valeur de alpha n'est précisée dans l'énoncé, nous décidonc alors de prendre alpha = 0.05 afin d'avoir une valeur nulérique pour chaque borne.
@@ -376,7 +412,9 @@ intervalles_s_vect <- replicate(100, {
 })
 ```
 
+
 #pareil rajouter un commentaire et les observations en dur
+
 
 ### Q13 
 
@@ -388,6 +426,8 @@ source("utils.R")
 
 
 
+
+
 Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précèdente ainsi que les paramètres rééls estimés donc ici a0, b0 et sigma0². Nous rajoutons également un titre afin de les différencier ...
 
 ```{r}
@@ -395,6 +435,8 @@ plot_ICs(intervalles_a_vect, mu = a0, main = "IC pour a")
 plot_ICs(intervalles_b_vect, mu = b0, main = "IC pour b")
 plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ²")
 ```
+
+
 
 
 
@@ -434,7 +476,9 @@ plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ² avec alpha = 0.5")
 
 
 
-Dans ce cas, cela est plus visuel, on voit bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
+
+
+Dans ce cas, cela est plyus visuel, on voir bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
 
 
 ### Q14
@@ -447,6 +491,8 @@ head(anscombe)
 
 
 
+
+
 On observe que ce jeu de données contient 4 *sous jeux* de données que nous pouvosn simplement tracer avec plot ... (de plus nous nous sommes renseignés sur anscombe avec lacommande ?anscombe)
 
 ```{r}
@@ -455,6 +501,8 @@ plot(anscombe$x2, anscombe$y2, main = "Graphique de (x2,y2)", xlab = "x2", ylab 
 plot(anscombe$x3, anscombe$y3, main = "Graphique de (x3,y3)", xlab = "x3", ylab = "y3")
 plot(anscombe$x4, anscombe$y4, main = "Graphique de (x4,y4)", xlab = "x4", ylab = "y4")
 ```
+
+
 
 
 
@@ -475,6 +523,8 @@ abline(reg1, col = "red")
 
 
 
+
+
 Ici on constate que le régression linéaire est correcte et adaptée.
 
 **Pour le deuxième jeu de données** : 
@@ -490,7 +540,9 @@ abline(reg2, col = "red")
 
 
 
-Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa fome en cloche, quadratique, qui rend la regression linéaire très peu adaptée.
+
+
+Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa fome en cloche, quadratique, qui rends la regression linéaire très peu adaptée.
 
 
 **Pour le troisième jeu de données** : 
@@ -506,6 +558,8 @@ abline(reg3, col = "red")
 
 
 
+
+
 On constate ici que notre droite ne suit pas bien les données, à cause d'une valeur aberrante qui fausse complètement la pente de notre droite... Ainsi la regression linéaire ne paraît pas adaptée lorsque l'on a des valeurs aberrantes (à moins qu'il y en ai beaucoup ou qu'elles s'annulent il semble)
 
 **Pour le quatrième jeu de données** : 
@@ -518,6 +572,8 @@ summary(reg4)
 plot(anscombe$x4, anscombe$y4, main = "Jeu 4", xlab="x4", ylab="y4")
 abline(reg4, col = "red")
 ```
+
+
 
 
 
@@ -571,6 +627,8 @@ for (i in 1:4) {
 }
 ```
 
+
+
 **Résultats Partie 1 :** 
 Indépendance : les résidus vs x ne montrent aucune structure, les erreurs semblent indépendantes.
 Normalité  : les points du QQ-plot sont alignés sur la droite, les erreurs suivent bien une loi normale.
@@ -605,6 +663,8 @@ Real_Data <- read.csv("happiness_csv.csv")
 head(Real_Data)
 ```
 
+
+
 Afin de trouver une paire qui nous convienne, nous pouvons déjà exclure les colonnes qui ne sont pas numériques. Enfin, nous devons également chercher des données qui sont liées entre elles... Pou rl'instant  une paire assez est : x = Economy..GDP.per.Capita. et y = Happiness.Score
 On s'attend à ce qu'un PIB plus élevé soit associé à un score de bonheur plus élevé.
 
@@ -624,6 +684,8 @@ r <- cor(Real_Data$Economy..GDP.per.Capita., Real_Data$Happiness.Score,
 cat("Coefficient de corrélation r =", round(r, 3), "\n")
 ```
 
+
+
 On observe un coefficient de corrélation r= 0,78. Ainsi il y a uneforte corrlation entre ces données, qui est confirmée graphiquement.
 Nous choisissons donc le PIB et le Happiness score comme paire de données.
 
@@ -642,13 +704,13 @@ plot(Real_Data$Economy..GDP.per.Capita., Real_Data$Happiness.Score,
 abline(reg_reel, col = "red")
 ```
 
+
 ## on discute ensemble j'arrive aps à voir mon graph :/
 
 ### Q19
 Estimation par intervalle de confiance à 95%
+
 ```{r}
 intervalles_confiance <- confint(reg_reel, level = 0.95)
 print(intervalles_confiance)
 ```
-
-
