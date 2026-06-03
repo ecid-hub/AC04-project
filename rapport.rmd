@@ -709,7 +709,9 @@ abline(reg_reel, col = "red")
 ```
 
 
-## on discute ensemble j'arrive aps à voir mon graph :/
+Le nuage de points montre une tendance linéaire positive : globalement, plus le PIB par habitant d'un pays est élevé, plus son score de bonheur augmente.
+La droite des moindres carrés (en rouge) traverse le nuage de manière très équilibrée, ce qui montre que le choix d'un modèle linéaire est tout à fait adapté pour capturer cette relation.
+On remarque quelques dispersion des points autour de la droite qui nous confirme graphiquement qu'il existe une variabilité et que le PIB n'est pas le seul facteur qui explique le bonheur.
 
 ### Q19
 Estimation par intervalle de confiance à 95%
@@ -759,71 +761,9 @@ sigma_b <- sum_reel$coefficients["x_reel", "Std. Error"]
 t_obs <- b / sigma_b
 
 # degré de liberté 
-ddl <- sum_reel$df[2]
+deg_lib <- sum_reel$df[2]
 
-valeur_critique <- qt(1 - 0.05/2, df = ddl)
-
-p_value <- sum_reel$coefficients["x_reel", "Pr(>|t|)"]
-
-cat("Pente estimée :", b, "\n")
-cat("Écart-type de la pente :", sigma_b, "\n")
-cat("Statistique T observée :", t_obs, "\n")
-cat("Valeur critique critique (|t_th|) :", valeur_critique, "\n")
-cat("P-value du test :", p_value, "\n")
-``` 
-La p-value obtenue étant très largement inférieure au seuil de significativité (0.05) et la statistique observée étant supérieure à la valeur critique théorique, nous rejetons  l'hypothèse nulle H0. On en conclut que la pente b est statistiquement non nulle et très significative : il existe un lien linéaire critique et avéré entre le PIB par habitant et le score de bonheur.
-
-### Q23
-On utilise le diagramme quantile-quantile pour vérifier l'hypothèse de normalité des résidus de notre régression linéaire
-```{r}
-residus <- reg_reel$residuals
-qqnorm(residus, main = "QQ-plot des résidus")
-qqline(residus, col = "red", lwd = 2)
-```
-
-### Q20
-
-On récupère le R² de notre régression linéaire grâce à la fonction summary que nous avons déjà utilisée précédement, et qui nous permet d'avoir accès à de nombreuses informations sur notre régression linéaire, dont le R².
-On peut aussi le recalculer via la formule de l'énoncé du nous dit que R^2 = Sreg/SY2.
-```{r}
-r2_reel <- sum_reel$r.squared
-cat("R^2 =", r2_reel, "\n")
-
-SY2 <- mean((y_reel - mean(y_reel))^2)
-SReg <-mean((reg_reel$fitted.values - mean(y_reel))^2)
-r2_calculé <- SReg / SY2
-cat("R^2 calculé =", r2_calculé)
-```
-
-On obtient bien le même résultat avec les deux méthodes.
-Nous avons un R^2 de ~0,61 montre que la richesse par habitant d'un pays explique à elle seule ~61 % de la variabilité de son score de bonheur mondial.
-
-### Q21
-
-On cherche à vérifier que R^2 est égal au carré du coefficient de corrélation entre les variables x et y. 
-
-```{r}
-coef_cor <-cor(x_reel, y_reel, method = "pearson")^2
-cat("R^2 =", r2_reel, "\n")
-cat("R^2 calculé à partir du coefficient de corrélation =", coef_cor)
-```
-
-On voit bien que les deux méthodes donnent le même résultat, ainsi on confirme que R^2 est égal au carré du coefficient de corrélation entre x et y.
-
-### Q22
-
-On cherche à tester l'hypothèse nulle H0 : b = 0 contre H1 son complémentaire, au niveau de signification alpha = 0.05.
-```{r}
-#pente estimée
-b <- sum_reel$coefficients["x_reel", "Estimate"]
-sigma_b <- sum_reel$coefficients["x_reel", "Std. Error"]
-
-t_obs <- b / sigma_b
-
-# degré de liberté 
-ddl <- sum_reel$df[2]
-
-valeur_critique <- qt(1 - 0.05/2, df = ddl)
+valeur_critique <- qt(1 - 0.05/2, df = deg_lib)
 
 p_value <- sum_reel$coefficients["x_reel", "Pr(>|t|)"]
 
@@ -842,3 +782,44 @@ residus <- reg_reel$residuals
 qqnorm(residus, main = "QQ-plot des résidus")
 qqline(residus, col = "red", lwd = 2)
 ```
+Les points du diagramme quantile-quantile suivent de près la droite de référence, avec juste un léger décrochage uniquement aux extrémités. 
+L'hypothèse de normalité des résidus est considérée comme validée de manière satisfaisante.
+
+### Q24
+
+On utilise le graphe des résidus corrigés versus la variable explicative pour vérifier l'indépendance des résidus corrigés et l'hypothèse d'homoscédasticité.
+```{r}
+plot(reg_reel$fitted.values, reg_reel$residuals, 
+     xlab = "Valeurs ajustées", ylab = "Résidus",
+     main = "Résidus en fonction des prédictions")
+abline(h = 0, lty = 2, col = "red")
+```
+
+Le graphique ne montre pas de structure apparente ou de motif prévisible. 
+Les résidus se répartissent de manière aléatoire autour de l'axe y=0.
+L'hypothèse d'indépendance et d'homoscédasticité est acceptée.
+
+### Q25
+
+```{r}
+new_data <- data.frame(x_reel = c(0.05,0.790))
+IC_EY0  <- predict(reg_reel, new_data , intperval = "confidence", level = 0.95)
+IC_Y0  <- predict(reg_reel, new_data, interval = "prediction", level = 0.95)
+print("Intervalle de confiance pour l'espérance conditionnelle E[Y|X=x0] :")
+print(IC_EY0)
+print("Intervalle de prédiction pour une nouvelle observation Y0 :")
+print(IC_Y0)
+```
+
+D'après les sorties R obtenues, on distingue deux cas selon la valeur du PIB par habitant :
+- Pour un pays fictif avec un PIB par habitant x0 = 0.05 (Ligne 1) :
+    - L'estimation du score de bonheur est = 3.609721.
+    - L'intervalle de prédiction à 95 % pour une nouvelle observation individuelle y0 est [2.170668 ; 5.048774].
+- Pour un pays fictif avec un PIB par habitant x0 = 0.790(Ligne 2) :
+    - L'estimation ponctuelle du score de bonheur est = 5.251209.
+    - L'intervalle de prédiction à 95 % pour une nouvelle observation individuelle y0 est [3.829509 ; 6.672909].
+
+
+### Q26
+#### a faire une fois tout check pour être sur 
+
