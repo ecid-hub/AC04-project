@@ -210,13 +210,14 @@ y_test <- a_estimé + b_estimé * mean(x)
 print(y_test)
 y_barre <- mean(y)
 print(y_barre)
+```
+
 
 On a bien y(x̄) = ȳ, donc nous confirmons que (x̄,ȳ) **appartient à la droite des moindres carrés**.
 
 ### Q8
 
-
-Nous réalisons donc une régression linéaire avec le couple (x,y) ...
+Nous réalisons donc une régression linéaire avec le couple (x,y)
 
 ```{r}
 donnees <- data.frame(varx = x, vary = y)
