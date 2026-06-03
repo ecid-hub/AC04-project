@@ -12,6 +12,7 @@ s0<-round(runif(1,1,3),2)
 
 
 
+
 ### Q1a 
 
 Nous pouvons générer n aléatoirement de la même manière que les valeurs précédentes (on considère la plage de valeurs possibles [200 ; 1000] :
@@ -20,6 +21,7 @@ Nous pouvons générer n aléatoirement de la même manière que les valeurs pr�
 n<- round(runif(1,200,1000),0)
 x<- runif(n,0,5)
 ```
+
 
 
 
@@ -44,6 +46,7 @@ y<- a0 + b0*x + epsilon
 
 
 
+
 ### Q2
 
 Nous utilisons la fonction plot pour tracer les nuages de points (xi,yi). Pour ajouter une droite sur le même graphique nous utilisons la fonction abline. (qui permet de rejouter une droite sur un graphe.)
@@ -55,6 +58,7 @@ plot(x, y,
 
 abline(a = a0, b = b0, col = "red")
 ```
+
 
 
 
@@ -98,6 +102,7 @@ sigma_estim <- function(x, y) {
 
 
 
+
 ### Q4 
 
 Pour obtenir une simulation de a, b et σ² à partir de notre jeu de données simulées, il suffit de calculer l'image des fonctions a_estim, b_estim et sigma_estime par x et y simulés. 
@@ -109,6 +114,7 @@ s_estimé <- sigma_estim(x, y)
 
 print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =", a_estimé, "b_estimé =", b_estimé, "s_estimé =", s_estimé))
 ```
+
 
 
 
@@ -139,6 +145,7 @@ legend("topleft",
 
 
 
+
 ### Q6 
 
 On a dans l'énoncé : ![alt text](image.png)
@@ -155,6 +162,7 @@ residus <- y - y_moindre_carres
 
 
 
+
 Ainsi nous pouvons vérifier la propriété des résidus de l'énoncé : 
 ![alt text](image-2.png)
 
@@ -165,6 +173,7 @@ somme_differences <- sum(y - y_moindre_carres)
 print(paste("La somme des différences est donc égale à", somme_differences))
 print("Le tout est environ égal à 0, ce qui confirme que la somme des résidus est égale à 0.")
 ```
+
 
 
 
@@ -193,6 +202,7 @@ text(mean(x), mean(y), labels = "(x̄, ȳ)", pos = 3, col="red")
 ```
 
 
+
 Nous constatons graphiquement que (x̄,ȳ) **appartient à la droite des moindres carrés**. Nous pouvons aussi calculer y(x̄) et vérifier si cette quantité est égale à ȳ :
 
 ```{r}
@@ -213,6 +223,7 @@ donnees <- data.frame(varx = x, vary = y)
 reg<-lm(vary~varx, data = donnees)
 summary(reg)
 ```
+
 
 
 
@@ -254,6 +265,7 @@ for (i in tailles) {
 
 
 
+
 Puis nous traçons les différentes valeurs de a estimées en fonctions de n, sur le même graphe on ajoute a0 afin demontre la convergence vers cette valeur :
 
 ```{r}
@@ -269,6 +281,7 @@ abline(h = a0, col = "red")
 
 
 
+
 On fait de même avec b :
 
 ```{r}
@@ -278,6 +291,7 @@ plot(tailles, b_vals, type = "l",
      xlab = "n", ylab = "b̂")
 abline(h = b0, col = "red")
 ```
+
 
 
 
@@ -300,10 +314,11 @@ simulations <- replicate(150, { #replicate va directement stocker nos résultats
   a_estim_sim <- a_estim(x_sim, y_sim)
   sigma_estim_sim <- sigma_estim(x_sim, y_sim)
 
-  return((a_estim_sim - a0) / sqrt((sigma_estim_sim / n_choisi) * (1 + mean(x_sim)^2 / var(x_sim)))) #expression de l'énoncé qui sera directement stockée dans un vecteur grâce à la fonction replicate
+  return((a_estim_sim - a0) / sqrt((sigma_estim_sim / n_choisi) * (1 + mean(x_sim)^2 / (mean(x_sim^2) - mean(x_sim)^2)))) #expression de l'énoncé qui sera directement stockée dans un vecteur grâce à la fonction replicate
   #je crois qu'il faut pas utiliser var(x_sim) mais plutôt la var corrigée donc  mean(x_sim^2) - mean(x_sim)^2
 })
 ```
+
 
 
 
@@ -329,6 +344,7 @@ curve(dt(x, df = 198), add = TRUE, col = "red")
 
 
 
+
 **On constate graphiquement qu'il y a bien une convergence entre ces deux lois pour n=200**
 
 ### Q11 
@@ -344,7 +360,7 @@ gen_IC_a <- function(x, y, alpha) {
   #rajouter : n <- length(x) pour pouvoir utiliser n dans la suite de la fonction
   a_est  <- a_estim(x, y)
   sig_est <- sigma_estim(x, y)
-  varx     <- var(x)
+  varx     <- mean(x^2) - mean(x)^2  
   #remplacer par  sx2<- mean(x^2) - mean(x)^2        qui est la variance empirique
   #Fonction quantile de la loi de student
   t_crit  <- qt(1 - alpha/2, df = n - 2)   
@@ -357,7 +373,7 @@ gen_IC_b <- function(x, y, alpha) {
   #rajouter : n <- length(x) pour pouvoir utiliser n dans la suite de la fonction
   b_est   <- b_estim(x, y)
   sig_est <- sigma_estim(x, y)
-  varx     <- var(x)
+  varx     <- mean(x^2) - mean(x)^2  
   #remplacer par  sx2<- mean(x^2) - mean(x)^2        qui est la variance empirique
   t_crit  <- qt(1 - alpha/2, df = n - 2)
   
@@ -377,6 +393,7 @@ gen_IC_s <- function(x, y, alpha) {
     (n - 2) * sig_est / chi_sup)
 }
 ```
+
 
 
 
@@ -414,6 +431,7 @@ intervalles_s_vect <- replicate(100, {
 ```
 
 
+
 #pareil rajouter un commentaire et les observations en dur
 
 
@@ -429,6 +447,7 @@ source("utils.R")
 
 
 
+
 Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précèdente ainsi que les paramètres rééls estimés donc ici a0, b0 et sigma0². Nous rajoutons également un titre afin de les différencier ...
 
 ```{r}
@@ -436,6 +455,7 @@ plot_ICs(intervalles_a_vect, mu = a0, main = "IC pour a")
 plot_ICs(intervalles_b_vect, mu = b0, main = "IC pour b")
 plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ²")
 ```
+
 
 
 
@@ -479,6 +499,7 @@ plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ² avec alpha = 0.5")
 
 
 
+
 Dans ce cas, cela est plyus visuel, on voir bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
 
 
@@ -494,6 +515,7 @@ head(anscombe)
 
 
 
+
 On observe que ce jeu de données contient 4 *sous jeux* de données que nous pouvosn simplement tracer avec plot ... (de plus nous nous sommes renseignés sur anscombe avec lacommande ?anscombe)
 
 ```{r}
@@ -502,6 +524,7 @@ plot(anscombe$x2, anscombe$y2, main = "Graphique de (x2,y2)", xlab = "x2", ylab 
 plot(anscombe$x3, anscombe$y3, main = "Graphique de (x3,y3)", xlab = "x3", ylab = "y3")
 plot(anscombe$x4, anscombe$y4, main = "Graphique de (x4,y4)", xlab = "x4", ylab = "y4")
 ```
+
 
 
 
@@ -526,6 +549,7 @@ abline(reg1, col = "red")
 
 
 
+
 Ici on constate que le régression linéaire est correcte et adaptée.
 
 **Pour le deuxième jeu de données** : 
@@ -538,6 +562,7 @@ summary(reg2)
 plot(anscombe$x2, anscombe$y2, main = "Jeu 2", xlab="x2", ylab="y2")
 abline(reg2, col = "red")
 ```
+
 
 
 
@@ -561,6 +586,7 @@ abline(reg3, col = "red")
 
 
 
+
 On constate ici que notre droite ne suit pas bien les données, à cause d'une valeur aberrante qui fausse complètement la pente de notre droite... Ainsi la regression linéaire ne paraît pas adaptée lorsque l'on a des valeurs aberrantes (à moins qu'il y en ai beaucoup ou qu'elles s'annulent il semble)
 
 **Pour le quatrième jeu de données** : 
@@ -573,6 +599,7 @@ summary(reg4)
 plot(anscombe$x4, anscombe$y4, main = "Jeu 4", xlab="x4", ylab="y4")
 abline(reg4, col = "red")
 ```
+
 
 
 
@@ -630,6 +657,7 @@ for (i in 1:4) {
 
 
 
+
 **Résultats Partie 1 :** 
 Indépendance : les résidus vs x ne montrent aucune structure, les erreurs semblent indépendantes.
 Normalité  : les points du QQ-plot sont alignés sur la droite, les erreurs suivent bien une loi normale.
@@ -666,6 +694,7 @@ head(real_data)
 
 
 
+
 Afin de trouver une paire qui nous convienne, nous pouvons déjà exclure les colonnes qui ne sont pas numériques. Enfin, nous devons également chercher des données qui sont liées entre elles... Pou rl'instant  une paire assez est : x = Economy..GDP.per.Capita. et y = Happiness.Score
 On s'attend à ce qu'un PIB plus élevé soit associé à un score de bonheur plus élevé.
 
@@ -684,6 +713,7 @@ r <- cor(real_data$Economy..GDP.per.Capita., real_data$Happiness.Score,
          use = "complete.obs")
 cat("Coefficient de corrélation r =", round(r, 3), "\n")
 ```
+
 
 
 
@@ -709,6 +739,7 @@ abline(reg_reel, col = "red")
 ```
 
 
+
 Le nuage de points montre une tendance linéaire positive : globalement, plus le PIB par habitant d'un pays est élevé, plus son score de bonheur augmente.
 La droite des moindres carrés (en rouge) traverse le nuage de manière très équilibrée, ce qui montre que le choix d'un modèle linéaire est tout à fait adapté pour capturer cette relation.
 On remarque quelques dispersion des points autour de la droite qui nous confirme graphiquement qu'il existe une variabilité et que le PIB n'est pas le seul facteur qui explique le bonheur.
@@ -721,10 +752,12 @@ intervalles_confiance <- confint(reg_reel, level = 0.95)
 print(intervalles_confiance)
 ```
 
+
 ### Q20
 
 On récupère le R² de notre régression linéaire grâce à la fonction summary que nous avons déjà utilisée précédement, et qui nous permet d'avoir accès à de nombreuses informations sur notre régression linéaire, dont le R².
 On peut aussi le recalculer via la formule de l'énoncé du nous dit que R^2 = Sreg/SY2.
+
 ```{r}
 r2_reel <- sum_reel$r.squared
 cat("R^2 =", r2_reel, "\n")
@@ -734,6 +767,7 @@ SReg <-mean((reg_reel$fitted.values - mean(y_reel))^2)
 r2_calculé <- SReg / SY2
 cat("R^2 calculé =", r2_calculé)
 ```
+
 
 On obtient bien le même résultat avec les deux méthodes.
 Nous avons un R^2 de ~0,61 montre que la richesse par habitant d'un pays explique à elle seule ~61 % de la variabilité de son score de bonheur mondial.
@@ -748,11 +782,13 @@ cat("R^2 =", r2_reel, "\n")
 cat("R^2 calculé à partir du coefficient de corrélation =", coef_cor)
 ```
 
+
 On voit bien que les deux méthodes donnent le même résultat, ainsi on confirme que R^2 est égal au carré du coefficient de corrélation entre x et y.
 
 ### Q22
 
 On cherche à tester l'hypothèse nulle H0 : b = 0 contre H1 son complémentaire, au niveau de signification alpha = 0.05.
+
 ```{r}
 #pente estimée
 b <- sum_reel$coefficients["x_reel", "Estimate"]
@@ -772,28 +808,33 @@ cat("Écart-type de la pente :", sigma_b, "\n")
 cat("Statistique T observée :", t_obs, "\n")
 cat("Valeur critique critique (|t_th|) :", valeur_critique, "\n")
 cat("P-value du test :", p_value, "\n")
-``` 
+```
+
 La p-value obtenue étant très largement inférieure au seuil de significativité (0.05) et la statistique observée étant supérieure à la valeur critique théorique, nous rejetons  l'hypothèse nulle H0. On en conclut que la pente b est statistiquement non nulle et très significative : il existe un lien linéaire critique et avéré entre le PIB par habitant et le score de bonheur.
 
 ### Q23
 On utilise le diagramme quantile-quantile pour vérifier l'hypothèse de normalité des résidus de notre régression linéaire
+
 ```{r}
 residus <- reg_reel$residuals
 qqnorm(residus, main = "QQ-plot des résidus")
 qqline(residus, col = "red", lwd = 2)
 ```
+
 Les points du diagramme quantile-quantile suivent de près la droite de référence, avec juste un léger décrochage uniquement aux extrémités. 
 L'hypothèse de normalité des résidus est considérée comme validée de manière satisfaisante.
 
 ### Q24
 
 On utilise le graphe des résidus corrigés versus la variable explicative pour vérifier l'indépendance des résidus corrigés et l'hypothèse d'homoscédasticité.
+
 ```{r}
 plot(reg_reel$fitted.values, reg_reel$residuals, 
      xlab = "Valeurs ajustées", ylab = "Résidus",
      main = "Résidus en fonction des prédictions")
 abline(h = 0, lty = 2, col = "red")
 ```
+
 
 Le graphique ne montre pas de structure apparente ou de motif prévisible. 
 Les résidus se répartissent de manière aléatoire autour de l'axe y=0.
@@ -811,6 +852,7 @@ print("Intervalle de prédiction pour une nouvelle observation Y0 :")
 print(IC_Y0)
 ```
 
+
 D'après les sorties R obtenues, on distingue deux cas selon la valeur du PIB par habitant :
 - Pour un pays fictif avec un PIB par habitant x0 = 0.05 (Ligne 1) :
     - L'estimation du score de bonheur est = 3.609721.
@@ -822,4 +864,3 @@ D'après les sorties R obtenues, on distingue deux cas selon la valeur du PIB pa
 
 ### Q26
 #### a faire une fois tout check pour être sur 
-
