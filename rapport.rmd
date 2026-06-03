@@ -358,11 +358,10 @@ Ainsi pour chaque calcul d'intervalle de confiance nous avosn besoins de fonctio
 
 # In tervalle de confiance pour a : 
 gen_IC_a <- function(x, y, alpha) {
-  #rajouter : n <- length(x) pour pouvoir utiliser n dans la suite de la fonction
+   n <- length(x)
   a_est  <- a_estim(x, y)
   sig_est <- sigma_estim(x, y)
-  varx     <- mean(x^2) - mean(x)^2  
-  #remplacer par  sx2<- mean(x^2) - mean(x)^2        qui est la variance empirique
+  varx     <- mean(x^2) - mean(x)^2  # la variance empirique
   #Fonction quantile de la loi de student
   t_crit  <- qt(1 - alpha/2, df = n - 2)   
   
@@ -371,11 +370,10 @@ gen_IC_a <- function(x, y, alpha) {
 }
 
 gen_IC_b <- function(x, y, alpha) {
-  #rajouter : n <- length(x) pour pouvoir utiliser n dans la suite de la fonction
+  n <- length(x)
   b_est   <- b_estim(x, y)
   sig_est <- sigma_estim(x, y)
-  varx     <- mean(x^2) - mean(x)^2  
-  #remplacer par  sx2<- mean(x^2) - mean(x)^2        qui est la variance empirique
+  varx     <- mean(x^2) - mean(x)^2  # la variance empirique
   t_crit  <- qt(1 - alpha/2, df = n - 2)
   
   marge <- t_crit * sqrt(sig_est / (varx * n))
@@ -383,7 +381,7 @@ gen_IC_b <- function(x, y, alpha) {
 }
 
 gen_IC_s <- function(x, y, alpha) {
-  #rajouter : n <- length(x) pour pouvoir utiliser n dans la suite de la fonction
+  n <- length(x)
   sig_est <- sigma_estim(x, y)
   
   # fonction quantile de la loi du Chi-deux
