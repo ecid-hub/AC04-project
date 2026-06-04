@@ -230,8 +230,6 @@ summary(reg)
 
 
 
-
-
 On constate alors :
 - **Intercept (Estimate)** est l'estimation de a (a_estim)
 - **varx (Estimate)** est l'estimation de b (b_estim)
@@ -451,29 +449,26 @@ plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ²")
 
 **Commentaire** :
 
-On remarque que pour les 3 coefficients, 100% des intervalles couvrent la valeur réélle du coefficient. Nous pouvions nous attendre à 95 % d'entre elles puisque nous avions pris alpha = 0.05. Cela paraît donc assez surprenant. Nous pouvons réessayer mais avec alpha = 0.5, dans ce cas nous devrions avoir à peu près 50% de rouge et 50% de vert, de même nous décidons d'augmenter le nombre d'intervalles calculées afin de réélement pouvoir voir une tendance se dessiner ...
+On remarque que pour les 3 coefficients, 100% des intervalles couvrent la valeur réélle du coefficient. Nous pouvions nous attendre à 95 % d'entre elles puisque nous avions pris alpha = 0.05. Cela paraît donc assez surprenant. Nous pouvons réessayer mais avec alpha = 0.5, dans ce cas nous devrions avoir à peu près 50% de rouge et 50% de vert.
 
 ```{r}
 alpha <- 0.5
 
-intervalles_a_vect <- replicate(10000, {
+intervalles_a_vect <- replicate(100, {
   x_sim <- runif(n_choisi, 0, 5)
   y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
-  
   gen_IC_a(x_sim, y_sim, alpha )
 })
 
-intervalles_b_vect <- replicate(10000, {
+intervalles_b_vect <- replicate(100, {
   x_sim <- runif(n_choisi, 0, 5)
   y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
-  
   gen_IC_b(x_sim, y_sim, alpha )
 })
 
-intervalles_s_vect <- replicate(10000, {
+intervalles_s_vect <- replicate(100, {
   x_sim <- runif(n_choisi, 0, 5)
   y_sim <- a0 + b0 * x_sim + rnorm(n_choisi, 0, sqrt(s0))
-  
   gen_IC_s(x_sim, y_sim, alpha )
 })
 
@@ -614,13 +609,12 @@ for (i in 1:4) {
   
   res_std  <- rstandard(mod)    
   res_corr <- residuals(mod) / sqrt(1 - hatvalues(mod))  # résidus corrigés ε̃
+  res_corr[!is.finite(res_corr)] <- NA
   fitted   <- fitted.values(mod)
   x_vals   <- anscombe[[paste0("x", i)]]
 
   # On commence par tracer les graphiques avec les résidus corrigés 
-# manque un truc la 
   qqnorm(res_corr,                                     
-         main = paste0("Jeu ", i, " – QQ-plot"),
          main = paste(titres[i], "– QQ-plot résidus corrigés"),
          pch = 19, col = "steelblue")
   qqline(res_corr, col = "red", lwd = 2)
