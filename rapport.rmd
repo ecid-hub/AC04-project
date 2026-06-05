@@ -695,7 +695,9 @@ Donc les 3 hypothèses sont violées, la régression n'a pas de sens ici.
 
 ### Q17 
 
-Nous choisissons de travailler avec le jeu de données hapiness.csv. Nous commencons par observer les différentes données de ce jeu ...
+Nous choisissons de travailler avec le jeu de données hapiness.csv, car celui ci contient beaucoup de jeux de données numériques (en effet nous ne pouvons pas effectuer un régression linéaire sur des données textuelles). De même il contient beaucoup de colonnes de données ce qui va nous permettre de pouvoir tester différentes paires candidates à une régression linéaire.
+
+Nous commencons par observer les différentes données de ce jeu ...
 
 ```{r}
 real_data <- read.csv("happiness_csv.csv")
@@ -708,6 +710,8 @@ head(real_data)
 
 Afin de trouver une paire qui nous convienne, nous pouvons déjà exclure les colonnes qui ne sont pas numériques. Enfin, nous devons également chercher des données qui sont liées entre elles... Pour l'instant une paire assez évidente est : x = Economy..GDP.per.Capita. et y = Happiness.Score
 On s'attend à ce qu'un PIB plus élevé soit associé à un score de bonheur plus élevé.
+
+Nous pouvons également tester la paire x = Economy..GDP.per.Capita. et y = Health..Life.EXpectancy ainsi que la paire x = Happiness.Score et y = Generosity qui elles aussi paraissent cohérentes en terme de sens. En effet on peut assumer que plus un pays a un PIB élevé, plus ses citoyens sont en bonne santé, et que plus les gens sont heureux plus ils sont généreux.
 
 Nous allons nous en assurer graphiquement...
 
@@ -729,10 +733,51 @@ cat("Coefficient de corrélation r =", round(r, 3), "\n")
 
 
 
-On observe un coefficient de corrélation r= 0,78. Ainsi il y a une forte corrélation entre ces données, qui est confirmée graphiquement. 
-Nous choisissons donc le PIB et le Happiness score comme paire de données.
+On observe un coefficient de corrélation r= 0,78. Ainsi il y a une forte corrélation entre ces données, qui est confirmée graphiquement. Nous faisons de même pour la paire x = Happiness.Score et y = Generosity
+
+
+```{r}
+# On trace le nuage de points
+plot(real_data$Happiness.Score, real_data$Generosity,
+     xlab = "Bonheur",
+     ylab = "Générosité",
+     main = "Générosité en fonction du bonheur",
+     pch = 19, col = "steelblue")
+
+#On calcule le coefficient de corrélation
+r <- cor(real_data$Hapiness.Score, real_data$Generosity,
+         use = "complete.obs")
+cat("Coefficient de corrélation r =", round(r, 3), "\n")
+```
+
+On observe que cette présente une très faible corrélation, déjà graphiquement il y a une forte dispoersion des points et surtout le coefficient de corrélation r = 0.18. Ainsi ce jeu est un un bien moins bon candidat que le précédent.
+
+Enfin testons la paire x = Economy..GDP.per.Capita. et y = Health..Life.EXpectancy : 
+
+```{r}
+# On trace le nuage de points
+plot(real_data$Economy..GDP.per.Capita, real_data$Health..Life.EXpectancy,
+     xlab = "PIB par habitant",
+     ylab = "Espérance de vie",
+     main = "Espérance de vie en fonction du PIB par habitant",
+     pch = 19, col = "steelblue")
+
+#On calcule le coefficient de corrélation
+r <- cor(real_data$Economy..GDP.per.Capita, real_data$Health..Life.EXpectancy,
+         use = "complete.obs")
+cat("Coefficient de corrélation r =", round(r, 3), "\n")
+```
+
+Cette paire de donnée est également une très bonne candidate pour la régression linéaire avec de nouveau un coefficient de corrélation r élevé.
+Ainsi en résumé nous avosn deux paires testées qui sont convenables et adaptées à une régression linéaire (on ne retrouve pas les cas quadratiques, verticaux, les valeurs aberrantes que l'on a observé dans la partie précédente).
+
+Nous choisissons donc le PIB et le Happiness score comme paire de données, car nous souhaitions traiter la question "L'argent fait-il le bonheur ?"
+
+
 
 ### Q18
+
+Nous avons déjà tracé le nuage de point afin de vérifier graphiquement que notre choix de paire était cohérent. Ajoutons maintenant la droite des moindres carrés sur le graphe ...
 
 ```{r}
 x_reel <- real_data$Economy..GDP.per.Capita.
@@ -749,8 +794,6 @@ plot(x_reel, y_reel,
      pch = 19, col = "steelblue")
 abline(reg_reel, col = "red")
 ```
-
-
 
 
 Le nuage de points montre une tendance linéaire positive : globalement, plus le PIB par habitant d'un pays est élevé, plus son score de bonheur augmente.
@@ -885,4 +928,6 @@ D'après les sorties R obtenues, on distingue deux cas selon la valeur du PIB pa
 
 
 ### Q26
-#### a faire une fois tout check pour être sur 
+10:37
+
+En travaillant sur le jeu de données happiness.csv, on a pu montrer qu'il existe bien une relation linéaire entre le PIB par habitant et le score de bonheur, avec un r = 0,78 et un R² d'environ 0,61. Les différentes hypothèses du modèle ont été vérifiées et sont satisfaites. Néanmoins, les 39 % de variabilité non expliquée nous rappellent que d'autres facteurs entrent en jeu dans le bonheur d'une population. Pour répondre à notre question de départ : l'argent contribue clairement au bonheur, mais il ne fait pas tout.
