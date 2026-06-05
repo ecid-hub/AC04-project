@@ -745,7 +745,7 @@ plot(real_data$Happiness.Score, real_data$Generosity,
      pch = 19, col = "steelblue")
 
 #On calcule le coefficient de corrélation
-r <- cor(real_data$Hapiness.Score, real_data$Generosity,
+r <- cor(real_data$Happiness.Score, real_data$Generosity,
          use = "complete.obs")
 cat("Coefficient de corrélation r =", round(r, 3), "\n")
 ```
@@ -756,14 +756,14 @@ Enfin testons la paire x = Economy..GDP.per.Capita. et y = Health..Life.EXpectan
 
 ```{r}
 # On trace le nuage de points
-plot(real_data$Economy..GDP.per.Capita, real_data$Health..Life.EXpectancy,
+plot(real_data$Economy..GDP.per.Capita, real_data$Health..Life.Expectancy,
      xlab = "PIB par habitant",
      ylab = "Espérance de vie",
      main = "Espérance de vie en fonction du PIB par habitant",
      pch = 19, col = "steelblue")
 
 #On calcule le coefficient de corrélation
-r <- cor(real_data$Economy..GDP.per.Capita, real_data$Health..Life.EXpectancy,
+r <- cor(real_data$Economy..GDP.per.Capita, real_data$Health..Life.Expectancy,
          use = "complete.obs")
 cat("Coefficient de corrélation r =", round(r, 3), "\n")
 ```
@@ -928,6 +928,4 @@ D'après les sorties R obtenues, on distingue deux cas selon la valeur du PIB pa
 
 
 ### Q26
-10:37
-
 En travaillant sur le jeu de données happiness.csv, on a pu montrer qu'il existe bien une relation linéaire entre le PIB par habitant et le score de bonheur, avec un r = 0,78 et un R² d'environ 0,61. Les différentes hypothèses du modèle ont été vérifiées et sont satisfaites. Néanmoins, les 39 % de variabilité non expliquée nous rappellent que d'autres facteurs entrent en jeu dans le bonheur d'une population. Pour répondre à notre question de départ : l'argent contribue clairement au bonheur, mais il ne fait pas tout.
