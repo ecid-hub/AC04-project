@@ -53,14 +53,14 @@ s0<-round(runif(1,1,3),2)
 
 ## Q1a 
 
-Nous pouvons générer n aléatoirement de la même manière que les valeurs précédentes (on considère la plage de valeurs possibles [200 ; 1000] :
+Nous pouvons générer n aléatoirement de la même manière que les valeurs précédentes (on considère la plage de valeurs possibles $[200 ; 1000]$ :
 
 ```{r}
 n<- round(runif(1,200,1000),0)
 x<- runif(n,0,5)
 ```
 
-Ainsi x est un vecteur qui contient les réalisations des VA Xi, qui suivent une loi uniforme sur [0;5].
+Ainsi x est un vecteur qui contient les réalisations des VA $(X_i)$, qui suivent une loi uniforme sur $[0;5]$.
 
 
 ## Q1b
@@ -91,13 +91,13 @@ abline(a = a0, b = b0, col = "red")
 
 ## Q3 
 
-D'après l'énoncé, nous avons les expressions des estimateurs de vraissemblance de a, b et σ² suivantes :
+D'après l'énoncé, nous avons les expressions des estimateurs de vraissemblance de a, b et ${\sigma^2}$ suivantes :
 $$\!\!\!\!\!\left\{\begin{array}{l} {\hat a} = {\bar Y} - \displaystyle{\frac{S_{xY}}{s_x^2}{\bar x}}= {\bar Y}- {\hat b} {\bar x}\\
     {\hat b}  = \displaystyle{\frac{S_{xY}}{s_x^2}} \\
      {\hat\sigma_{MV}^2}  =\displaystyle{ \frac{1}{n}\sum_{i=1}^n (Y_i - {\hat a} - {\hat b}x_i)^2} \end{array}\right.,$$
 
 
-Cependant l'énoncé nous précise que cet estimateur de σ² **est biaisé**, or on nous demande de donner un estimateur non biaisé ! Ainsi pour estimer σ² nous utilisons l'autre formule donnée par l'énoncé : 
+Cependant l'énoncé nous précise que cet estimateur de ${\sigma^2}$ **est biaisé**, or on nous demande de donner un estimateur non biaisé ! Ainsi pour estimer ${\sigma^2}$ nous utilisons l'autre formule donnée par l'énoncé : 
 ${\hat \sigma}^2$ estimateur sans biais de $\sigma^2$ :
 
 $${\hat \sigma}^2=\displaystyle{\frac{n}{n-2}}\;  {\hat\sigma_{MV}^2}= \; \displaystyle{ \frac{1}{n-2}\sum_{i=1}^n (Y_i - {\hat a} - {\hat b}x_i)^2};$$
@@ -130,7 +130,8 @@ b_estimé <- b_estim(x, y)
 a_estimé <- a_estim(x, y)
 s_estimé <- sigma_estim(x, y)
 
-print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =", a_estimé, "b_estimé =", b_estimé, "s_estimé =", s_estimé))
+print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =", a_estimé))
+print(paste("b_estimé =", b_estimé, "s_estimé =", s_estimé))
 ```
 
 ## Q5
@@ -228,15 +229,18 @@ summary(reg)
 ```
 
 On constate alors :
+
 - **Intercept (Estimate)** est l'estimation de a (a_estim)
+
 - **varx (Estimate)** est l'estimation de b (b_estim)
+
 - **Residual standard error** est l'estimation de sigma (sqrt(sigma_etim)) 
 
-#### on devrait pas afficher les comparaisons entre les lm et nos trucs manuels ? 
 
 ## Q9
 
-Nous pouvons définir un vecteur de valeurs possibles pour n, que nous faisons prendre des valeurs de plus en plus grandes, puis pour chacune de ces valeurs nous prenon une réalisation simulée de x et y, et calculons les réalisations des estimations de a et de b associées. 
+Nous pouvons définir un vecteur de valeurs possibles pour n, que nous faisons prendre des valeurs de plus en plus grandes, puis pour chacune de ces valeurs nous prenon une réalisation simulée de x et y, et calculons les réalisations des estimations de a et de b associées.
+
 Nous stockons chacune de ces valeurs dans un vecteur afin de pouvoir faire un graphique ultérieurement.
 
 ```{r}
@@ -270,7 +274,6 @@ abline(h = a0, col = "red")
 ```
 
 
-
 On fait de même avec b :
 
 ```{r}
@@ -288,9 +291,9 @@ Grâce aux deux graphiques, on peut bien voir que quand n est grand, les estimat
 
 ## Q10 
 
-En suivant les indications, nous choisissons **n=200**, enfin nous simulons 150 réalisations de 200 couples de (x,y), que nous stockons dans un vecteur grâce à la fonction replicate (dont nous avons vérifié le fonctionnement avec la commande ?replicate).
+En suivant les indications, nous choisissons **n=200**, enfin nous simulons 150 réalisations de 200 couples de (x,y), que nous stockons dans un vecteur grâce à la fonction replicate (dont nous avons vérifié le fonctionnement avec la commande $?replicate$).
 
-De plus, nous calculons pour tout t une réalisation de l'estimateur de a. De même pour σ, qui est également nécessaire pour le calcul demandé. Nous avons également besoin de mean(x) et Sx :
+De plus, nous calculons pour tout t une réalisation de l'estimateur de a. De même pour ${\sigma}$, qui est également nécessaire pour le calcul demandé. Nous avons également besoin de $mean(x)$ et ${S_x}$ :
 
 ```{r}
 n_choisi <- 200
@@ -383,7 +386,7 @@ gen_IC_s <- function(x, y, alpha) {
 
 ## Q12
 
-Aucune valeur d'alpha n'est précisée dans l'énoncé, nous décidons alors de prendre alpha = 0.05 afin d'avoir une valeur numérique pour chaque borne.
+Aucune valeur d'alpha n'est précisée dans l'énoncé, nous décidons alors de prendre ${\alpha = 0.05}$ afin d'avoir une valeur numérique pour chaque borne.
 
 ```{r}
 alpha <- 0.05
@@ -414,13 +417,13 @@ intervalles_s_vect <- replicate(100, {
 
 ## Q13 
 
-On commence par sourcer le nouceau fichier auquel nous faisons référence ...
+On commence par sourcer le nouveau fichier auquel nous faisons référence ...
 
 ```{r}
 source("utils.R")
 ```
 
-Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précédente ainsi que les paramètres rééls estimés donc ici a0, b0 et sigma0². Nous rajoutons également un titre afin de les différencier.
+Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précédente ainsi que les paramètres rééls estimés donc ici a0, b0 et ${\sigma_0^2}$. Nous rajoutons également un titre afin de les différencier.
 
 ```{r}
 plot_ICs(intervalles_a_vect, mu = a0, main = "IC pour a")
@@ -436,7 +439,7 @@ plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ²")
 
 **Commentaire** :
 
-On remarque que pour les 3 coefficients, à peu près 95% des intervalles couvrent la valeur réélle du coefficient. Nous pouvions nous attendre à 95 % d'entre elles puisque nous avions pris alpha = 0.05. Cela paraît donc cohérent. Nous pouvons réessayer mais avec alpha = 0.5, dans ce cas nous devrions avoir à peu près 50% de rouge et 50% de vert.
+On remarque que pour les 3 coefficients, à peu près 95% des intervalles couvrent la valeur réélle du coefficient. Nous pouvions nous attendre à 95 % d'entre elles puisque nous avions pris ${\alpha = 0.05}$. Cela paraît donc cohérent. Nous pouvons réessayer mais avec ${\alpha = 0.5}$, dans ce cas nous devrions avoir à peu près 50% de rouge et 50% de vert.
 
 ```{r}
 alpha <- 0.5
@@ -493,7 +496,7 @@ plot(anscombe$x4, anscombe$y4, main = "Graphique de (x4,y4)", xlab = "x4", ylab 
 
 ## Q15 
 
-Nous nous servons de la fonction lm() qui permet de faire une régression linéaire en R et qui a été introduite en question 8. De même, nous décidons de tracer la droite  de régression linéaire afin de bien visualiser celle-ci et rendre plus aisée la discussion ...
+Nous nous servons de la fonction $lm()$ qui permet de faire une régression linéaire en R et qui a été introduite en question 8. De même, nous décidons de tracer la droite  de régression linéaire afin de bien visualiser celle-ci et rendre plus aisée la discussion ...
 
 **Pour le premier jeu de données** : 
 
@@ -763,18 +766,21 @@ print(intervalles_confiance)
 ## Q20
 
 On récupère le ${R}^2$ de notre régression linéaire grâce à la fonction summary que nous avons déjà utilisée précédement, et qui nous permet d'avoir accès à de nombreuses informations sur notre régression linéaire, dont le ${R}^2$.
-On peut aussi le recalculer via la formule de l'énoncé du nous dit que $$R^2=\displaystyle{\frac{S_{reg}}{S_Y^2}}$$.
 
 ```{r}
 r2_reel <- sum_reel$r.squared
 cat("R^2 =", r2_reel, "\n")
+```
 
+
+On peut aussi le recalculer via la formule de l'énoncé qui nous dit que $$R^2=\displaystyle{\frac{S_{reg}}{S_Y^2}}$$.
+
+```{r}
 SY2 <- mean((y_reel - mean(y_reel))^2)
 SReg <-mean((reg_reel$fitted.values - mean(y_reel))^2)
 r2_calculé <- SReg / SY2
 cat("R^2 calculé =", r2_calculé)
 ```
-
 
 
 On obtient bien le même résultat avec les deux méthodes.
