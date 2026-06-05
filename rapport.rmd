@@ -1,10 +1,49 @@
+---
+title: "TP Projet AC04" 
+author: "Candice LAMERAND, Rosalie ACCOCEBERRY, Enzo BELLICAUD"
+date: "06/05/2026"
+institute: "GI UTC"
+lang: fr
+language:
+  title-block-author-single: "Auteurs"
+format:
+  html:
+    toc: true
+    toc-location: left
+    cap-location: margin
+    code-fold: false
+    highlight-style: github
+    code-copy: true
+    html-math-method: katex
+    number-sections: true
+    code-line-numbers: false
+    include-after-body:
+        text: |
+          <script>
+          const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+          for (var i=0; i<noterefs.length; i++) {
+            const ref = noterefs[i];
+            ref.onclick = function(){ref._tippy.show();return false;};
+          }
+          </script>
+    embed-resources: true
+    self-contained-math: true
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Répartition de la contribution 
+
+## Q0. {.unnumbered}
 LAMERAND Candice -> 
+
 ACCOCEBERRY Rosalie -> 
+
 BELLICAUD Enzo -> 
 
 
-
-## 2 - Données simulées 
+# Données simulées 
 
 ```{r}
 a0<-round(runif(1,3,15),2)
@@ -12,14 +51,7 @@ b0<-round(runif(1,1,5),2)
 s0<-round(runif(1,1,3),2)
 ```
 
-
-
-
-
-
-
-
-### Q1a 
+## Q1a 
 
 Nous pouvons générer n aléatoirement de la même manière que les valeurs précédentes (on considère la plage de valeurs possibles [200 ; 1000] :
 
@@ -28,17 +60,10 @@ n<- round(runif(1,200,1000),0)
 x<- runif(n,0,5)
 ```
 
-
-
-
-
-
-
-
 Ainsi x est un vecteur qui contient les réalisations des VA Xi, qui suivent une loi uniforme sur [0;5].
 
 
-### Q1b
+## Q1b
 
 D'après la partie 1, nous savons que *$Y_i$​=a+b $x_i$​+ $ϵ_i$​*. Cependant nous n'avons pas de valeur directe de **$ϵ_i$**. Or, on a d'après l'énoncé :
 $ϵ_i$​∼N(0,σ²). Ainsi, dans le cas de notre simulation, $ϵ_i$​∼N(0,$s_0$). Donc en R : 
@@ -49,20 +74,14 @@ y<- a0 + b0*x + epsilon
 ```
 
 
+## Q2
 
-
-
-
-
-
-### Q2
-
-Nous utilisons la fonction plot pour tracer les nuages de points (xi,yi). Pour ajouter une droite sur le même graphique nous utilisons la fonction abline. (qui permet de rajouter une droite sur un graphe.)
+Nous utilisons la fonction plot pour tracer les nuages de points $(x_i,y_i)_{1\leq i \leq n}$. Pour ajouter une droite sur le même graphique nous utilisons la fonction abline. (qui permet de rajouter une droite sur un graphe.)
 
 ```{r}
 plot(x, y,
      main = "(xi,yi) et droite de régression",
-     xlab = "x", ylab = "y")
+     xlab = "x", ylab = "y", col = "grey")
 
 abline(a = a0, b = b0, col = "red")
 ```
@@ -70,17 +89,18 @@ abline(a = a0, b = b0, col = "red")
 
 
 
-
-
-
-
-### Q3 
+## Q3 
 
 D'après l'énoncé, nous avons les expressions des estimateurs de vraissemblance de a, b et σ² suivantes :
-![alt text](image-1.png)
+$$\!\!\!\!\!\left\{\begin{array}{l} {\hat a} = {\bar Y} - \displaystyle{\frac{S_{xY}}{s_x^2}{\bar x}}= {\bar Y}- {\hat b} {\bar x}\\
+    {\hat b}  = \displaystyle{\frac{S_{xY}}{s_x^2}} \\
+     {\hat\sigma_{MV}^2}  =\displaystyle{ \frac{1}{n}\sum_{i=1}^n (Y_i - {\hat a} - {\hat b}x_i)^2} \end{array}\right.,$$
 
 
-Cependant l'énoncé nous précise que cet estimateur de σ² **est biaisé**, or on nous demande de donner un estimateur non biaisé ! Ainsi pour estimer σ² nous utilisons l'autre formule donnée par l'énoncé : ![alt text](image-4.png)
+Cependant l'énoncé nous précise que cet estimateur de σ² **est biaisé**, or on nous demande de donner un estimateur non biaisé ! Ainsi pour estimer σ² nous utilisons l'autre formule donnée par l'énoncé : 
+${\hat \sigma}^2$ estimateur sans biais de $\sigma^2$ :
+
+$${\hat \sigma}^2=\displaystyle{\frac{n}{n-2}}\;  {\hat\sigma_{MV}^2}= \; \displaystyle{ \frac{1}{n-2}\sum_{i=1}^n (Y_i - {\hat a} - {\hat b}x_i)^2};$$
 
 Ainsi il nous suffit de créer ces fonctions grâce à nos simulations de x et y :
 
@@ -101,15 +121,9 @@ sigma_estim <- function(x, y) {
 ```
 
 
+## Q4 
 
-
-
-
-
-
-### Q4 
-
-Pour obtenir une simulation de a, b et σ² à partir de notre jeu de données simulées, il suffit de calculer l'image des fonctions a_estim, b_estim et sigma_estime par x et y simulés. 
+Pour obtenir une simulation de a, b et $\sigma^2$ à partir de notre jeu de données simulées, il suffit de calculer l'image des fonctions a_estim, b_estim et sigma_estime par x et y simulés. 
 
 ```{r}
 b_estimé <- b_estim(x, y)
@@ -119,21 +133,14 @@ s_estimé <- sigma_estim(x, y)
 print(paste("Les réalisations simulées des estimateurs sont donc a_estimé =", a_estimé, "b_estimé =", b_estimé, "s_estimé =", s_estimé))
 ```
 
-
-
-
-
-
-
-
-### Q5
+## Q5
 
 Nous rajoutons également une légende avec la fonction legend afin d'avoir plus de clarté sur notre graphique.
 
 ```{r}
 plot(x, y,
      main = "(xi,yi) et droite de régression",
-     xlab = "x", ylab = "y")
+     xlab = "x", ylab = "y", col="grey")
 
 abline(a = a0, b = b0, col = "red") #Droite y=a0+b0x
 
@@ -146,15 +153,11 @@ legend("topleft",
 ```
 
 
+## Q6 
 
-
-
-
-
-
-### Q6 
-
-On a dans l'énoncé : ![alt text](image.png)
+On a dans l'énoncé : Pour tout $i =1,\dots,n$,
+    ${\hat Y}_i = {\hat a} + {\hat b} x_i$ et
+    ${\hat \epsilon}_i=Y_i -{\hat Y}_i$
 Ainsi nous pouvons trouver le vecteur des résidus :
 
 ```{r}
@@ -165,14 +168,8 @@ residus <- y - y_moindre_carres
 ```
 
 
-
-
-
-
-
-
 Ainsi nous pouvons vérifier la propriété des résidus de l'énoncé : 
-![alt text](image-2.png)
+  $$\displaystyle{\sum_{i=1}^n {\hat \epsilon}_i= \sum_{i=1}^n (y_i -{\hat y}_i)=0}$$
 
 ```{r}
 somme_residus <- sum(residus)
@@ -183,15 +180,9 @@ print("Le tout est environ égal à 0, ce qui confirme que la somme des résidus
 ```
 
 
-
-
-
-
-
-
 On constate que les deux quantités sont égales, la **propriété des résidus est confirmée**.
 
-### Q7
+## Q7
 
 Vérifions dans un premier temps cette hypothèse graphiquement avec la fonction points qui nous permet de rajouter un point sur notre graphique :
 
@@ -211,9 +202,7 @@ text(mean(x), mean(y), labels = "(x̄, ȳ)", pos = 3, col="red")
 ```
 
 
-
-
-Nous constatons graphiquement que (x̄,ȳ) **appartient à la droite des moindres carrés**. Nous pouvons aussi calculer y(x̄) et vérifier si cette quantité est égale à ȳ :
+Nous constatons graphiquement que (${\bar x}$,${\bar y}$) **appartient à la droite des moindres carrés**. Nous pouvons aussi calculer y(${\bar x}$̄) et vérifier si cette quantité est égale à ${\bar y}$ :
 
 ```{r}
 y_test <- a_estimé + b_estimé * mean(x)
@@ -224,9 +213,11 @@ print(y_barre)
 
 
 
-On a bien y(x̄) = ȳ, donc nous confirmons que (x̄,ȳ) **appartient à la droite des moindres carrés**.
+On a bien y(${\bar x}$̄) = ȳ, donc nous confirmons que (${\bar x}$,ȳ) **appartient à la droite des moindres carrés**.
 
-### Q8
+
+
+## Q8
 
 Nous réalisons donc une régression linéaire avec le couple (x,y)
 
@@ -236,19 +227,14 @@ reg<-lm(vary~varx, data = donnees)
 summary(reg)
 ```
 
-
-
-
-
-
 On constate alors :
 - **Intercept (Estimate)** est l'estimation de a (a_estim)
 - **varx (Estimate)** est l'estimation de b (b_estim)
 - **Residual standard error** est l'estimation de sigma (sqrt(sigma_etim)) 
 
-# on devrait pas afficher les comparaisons entre les lm et nos trucs manuels ? 
+#### on devrait pas afficher les comparaisons entre les lm et nos trucs manuels ? 
 
-### Q9
+## Q9
 
 Nous pouvons définir un vecteur de valeurs possibles pour n, que nous faisons prendre des valeurs de plus en plus grandes, puis pour chacune de ces valeurs nous prenon une réalisation simulée de x et y, et calculons les réalisations des estimations de a et de b associées. 
 Nous stockons chacune de ces valeurs dans un vecteur afin de pouvoir faire un graphique ultérieurement.
@@ -273,12 +259,6 @@ for (i in tailles) {
 ```
 
 
-
-
-
-
-
-
 Puis nous traçons les différentes valeurs de a estimées en fonctions de n, sur le même graphe on ajoute a0 afin de montrer la convergence vers a0  :
 
 ```{r}
@@ -288,11 +268,6 @@ plot(tailles, a_vals, type = "l",
      xlab = "n", ylab = "â")
 abline(h = a0, col = "red")
 ```
-
-
-
-
-
 
 
 
@@ -308,12 +283,10 @@ abline(h = b0, col = "red")
 
 
 
-
-
 Grâce aux deux graphiques, on peut bien voir que quand n est grand, les estimateurs de a et b convergent vers les vraies valeurs a0 et b0.
 
 
-### Q10 
+## Q10 
 
 En suivant les indications, nous choisissons **n=200**, enfin nous simulons 150 réalisations de 200 couples de (x,y), que nous stockons dans un vecteur grâce à la fonction replicate (dont nous avons vérifié le fonctionnement avec la commande ?replicate).
 
@@ -352,16 +325,20 @@ legend("topright",
 
 
 
-
-
-
-
-
 **On constate graphiquement qu'il y a bien une convergence entre ces deux lois pour n=200**
 
-### Q11 
+## Q11 
 
-D'après l'énoncé on a : ![alt text](image-3.png)
+D'après l'énoncé on a :
+$IC^b_{1-\alpha}\stackrel{Déf.}{:}$ IC bilatéral au niveau
+    $1-\alpha$
+
+\begin{align*}
+IC^b_{1-\alpha}(a) & =   {\hat a} \pm t_{n-2,1-\alpha/2} \sqrt{\frac{{\hat \sigma}^2}{n} (1+\displaystyle{\frac{{\bar x}^2}{s_x^2})}}  \\ 
+IC^b_{1-\alpha}(b)  & =  {\hat b} \pm t_{n-2,1-\alpha/2} \sqrt{\frac{{\hat \sigma}^2}{ns_x^2}} \\
+IC^b_{1-\alpha}(\sigma^2) &=  [\displaystyle{\frac{(n-2){\hat \sigma}^2}{F^{-1}_{\chi^2_{n-2}}(1-\alpha/2)}}, \displaystyle{\frac{(n-2){\hat \sigma}^2}{F^{-1}_{\chi^2_{n-2}}(\alpha/2)}} ],
+\end{align*}
+
 
 Ainsi pour chaque calcul d'intervalle de confiance nous avons besoin des fonctions quantiles de la loi du Chi-deux et de la loi de Student, de la variance de X et des réalisations des estimateurs de a,b et sigma. Puis, en suivant simplement les formules, nous renvoyons un vecteur qui contient la plus petite valeur possible de l'estimateur (l'estimateur - la marge de confiance) et la plus grande (l'estimateur + la marge de confiance) :
 
@@ -404,7 +381,7 @@ gen_IC_s <- function(x, y, alpha) {
 ```
 
 
-### Q12
+## Q12
 
 Aucune valeur d'alpha n'est précisée dans l'énoncé, nous décidons alors de prendre alpha = 0.05 afin d'avoir une valeur numérique pour chaque borne.
 
@@ -435,21 +412,13 @@ intervalles_s_vect <- replicate(100, {
 
 
 
-
-
-### Q13 
+## Q13 
 
 On commence par sourcer le nouceau fichier auquel nous faisons référence ...
 
 ```{r}
 source("utils.R")
 ```
-
-
-
-
-
-
 
 Puis on se sert de l'unique fonction de ce fichier, en prenant en paramètre les matrices des IC que l'on a trouvé grâce à la question précédente ainsi que les paramètres rééls estimés donc ici a0, b0 et sigma0². Nous rajoutons également un titre afin de les différencier.
 
@@ -497,29 +466,19 @@ plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ² avec alpha = 0.5")
 ```
 
 
-
-
-
-
-
 Dans ce cas, cela est plus visuel, on voit bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
 
 
-## 3 - Homoscédasticité, indépendance et normalité des résidus
+# Homoscédasticité, indépendance et normalité des résidus
 
 
-### Q14
+## Q14
 
 Premièrement nous pouvons afficher les premières lignes du jeu de données Anscombe afin de voir son nombre de colonnes etc ...
 
 ```{r}
 head(anscombe)
 ```
-
-
-
-
-
 
 
 On observe que ce jeu de données contient 4 *sous jeux* de données que nous pouvons simplement tracer avec plot. De plus nous nous sommes renseignés sur anscombe avec la commande ?anscombe.
@@ -532,12 +491,7 @@ plot(anscombe$x4, anscombe$y4, main = "Graphique de (x4,y4)", xlab = "x4", ylab 
 ```
 
 
-
-
-
-
-
-### Q15 
+## Q15 
 
 Nous nous servons de la fonction lm() qui permet de faire une régression linéaire en R et qui a été introduite en question 8. De même, nous décidons de tracer la droite  de régression linéaire afin de bien visualiser celle-ci et rendre plus aisée la discussion ...
 
@@ -551,11 +505,6 @@ summary(reg1)
 plot(anscombe$x1, anscombe$y1, main = "Jeu 1", xlab="x1", ylab="y1")
 abline(reg1, col = "red")
 ```
-
-
-
-
-
 
 
 Ici on constate que le régression linéaire est correcte et adaptée.
@@ -572,11 +521,6 @@ abline(reg2, col = "red")
 ```
 
 
-
-
-
-
-
 Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa forme en cloche, quadratique, qui rend la regression linéaire très peu adaptée.
 
 
@@ -590,12 +534,6 @@ summary(reg3)
 plot(anscombe$x3, anscombe$y3, main = "Jeu 3", xlab="x3", ylab="y3")
 abline(reg3, col = "red")
 ```
-
-
-
-
-
-
 
 On constate ici que notre droite ne suit pas bien les données, à cause d'une valeur aberrante qui fausse complètement la pente de notre droite... Ainsi la regression linéaire ne paraît pas adaptée lorsque l'on a des valeurs aberrantes (à moins qu'il y en ai beaucoup ou qu'elles s'annulent...)
 
@@ -611,14 +549,9 @@ abline(reg4, col = "red")
 ```
 
 
-
-
-
-
-
 Ici on constate très rapidement que la forme horizontale du jeu de données n'est pas du tout cohérente avec la régression linéaire ....
 
-### Q16
+## Q16
 
 Ici on peut reprendre nos régressions linéaires reg1, reg2, reg3, et reg4 
 
@@ -666,29 +599,35 @@ for (i in 1:4) {
 ```
 
 
-
-
-
 **Résultats Partie 1 :** 
 - Indépendance : les résidus *vs* x ne montrent aucune structure, les erreurs semblent indépendantes.
+
 - Normalité  : les points du QQ-plot sont alignés sur la droite, les erreurs suivent bien une loi normale.
-- Homoscédasticité : les résidus *vs* ŷ sont dispersés uniformément autour de 0, la variance est constante.
+
+- Homoscédasticité : les résidus *vs* ${\hat y}$ sont dispersés uniformément autour de 0, la variance est constante.
+
 
 
 Donc les 3 hypothèses (H) sont satisfaites, la régression linéaire est valide.
 
 **Résultats Partie 2 :** 
 - Indépendance : les résidus *vs* x suivent une courbe en U, les erreurs sont systématiques, elles ne sont pas indépendantes.
+
 - Normalité : le QQ-plot dévie en U, les erreurs ne suivent pas une loi normale.
+
 - Homoscédasticité : la variance des résidus n'est pas constante, elle dépend de x.
+
 
 
 Donc les 3 hypothèses sont violées : la relation est quadratique, pas linéaire.
 
 **Résultats Partie 3 :**
 - Indépendance : difficile à conclure à cause de la valeur aberrante qui domine l'analyse.
+
 - Normalité : le QQ-plot montre un point très éloigné de la droite, présence d'une valeur aberrante, la normalité est violée.
+
 - Homoscédasticité : la variance paraît constante si on exclut la valeur aberrante, mais ce dernier la perturbe fortement.
+
 
 
 Donc la normalité est violée à cause d'un point aberrant qui influence fortement l'estimation.
@@ -696,16 +635,19 @@ Donc la normalité est violée à cause d'un point aberrant qui influence fortem
 
 **Résultats Partie 4 :**
 - Indépendance : x est quasi-constant (sauf un point), il n'y a pas de vraie relation à modéliser.
+
 - Normalité : le QQ-plot est inexploitable, quasiment tous les résidus sont nuls sauf un.
+
 - Homoscédasticité  : la variance des résidus est nulle partout sauf en un point, variance non constante.
+
 
 
 Donc les 3 hypothèses sont violées, la régression n'a pas de sens ici.
 
 
-## 4 - Jeu de données réelles
+# Jeu de données réelles
 
-### Q17 
+## Q17 
 
 Nous choisissons de travailler avec le jeu de données hapiness.csv, car celui ci contient beaucoup de jeux de données numériques (en effet nous ne pouvons pas effectuer un régression linéaire sur des données textuelles). De même il contient beaucoup de colonnes de données ce qui va nous permettre de pouvoir tester différentes paires candidates à une régression linéaire.
 
@@ -717,13 +659,10 @@ head(real_data)
 ```
 
 
-
-
-
-Afin de trouver une paire qui nous convienne, nous pouvons déjà exclure les colonnes qui ne sont pas numériques. Enfin, nous devons également chercher des données qui sont liées entre elles... Pour l'instant une paire assez évidente est : x = Economy..GDP.per.Capita. et y = Happiness.Score
+Afin de trouver une paire qui nous convienne, nous pouvons déjà exclure les colonnes qui ne sont pas numériques. Enfin, nous devons également chercher des données qui sont liées entre elles... Pour l'instant une paire assez évidente est : $x = Economy..GDP.per.Capita.$ et $y = Happiness.Score$
 On s'attend à ce qu'un PIB plus élevé soit associé à un score de bonheur plus élevé.
 
-Nous pouvons également tester la paire x = Economy..GDP.per.Capita. et y = Health..Life.EXpectancy ainsi que la paire x = Happiness.Score et y = Generosity qui elles aussi paraissent cohérentes en terme de sens. En effet on peut assumer que plus un pays a un PIB élevé, plus ses citoyens sont en bonne santé, et que plus les gens sont heureux plus ils sont généreux.
+Nous pouvons également tester la paire $x = Economy..GDP.per.Capita.$ et $y = Health..Life.EXpectancy$ ainsi que la paire $x = Happiness.Score$ et $y = Generosity$ qui elles aussi paraissent cohérentes en terme de sens. En effet on peut assumer que plus un pays a un PIB élevé, plus ses citoyens sont en bonne santé, et que plus les gens sont heureux plus ils sont généreux.
 
 Nous allons nous en assurer graphiquement...
 
@@ -742,10 +681,7 @@ cat("Coefficient de corrélation r =", round(r, 3), "\n")
 ```
 
 
-
-
-
-On observe un coefficient de corrélation r= 0,78. Ainsi il y a une forte corrélation entre ces données, qui est confirmée graphiquement. Nous faisons de même pour la paire x = Happiness.Score et y = Generosity
+On observe un coefficient de corrélation $r= 0,78.$ Ainsi il y a une forte corrélation entre ces données, qui est confirmée graphiquement. Nous faisons de même pour la paire $x = Happiness.Score$ et $y = Generosity$
 
 
 ```{r}
@@ -762,9 +698,9 @@ r <- cor(real_data$Happiness.Score, real_data$Generosity,
 cat("Coefficient de corrélation r =", round(r, 3), "\n")
 ```
 
-On observe que cette présente une très faible corrélation, déjà graphiquement il y a une forte dispoersion des points et surtout le coefficient de corrélation r = 0.18. Ainsi ce jeu est un un bien moins bon candidat que le précédent.
+On observe que cette présente une très faible corrélation, déjà graphiquement il y a une forte dispoersion des points et surtout le coefficient de corrélation $r = 0.18$. Ainsi ce jeu est un un bien moins bon candidat que le précédent.
 
-Enfin testons la paire x = Economy..GDP.per.Capita. et y = Health..Life.EXpectancy : 
+Enfin testons la paire $x = Economy..GDP.per.Capita$. et $y = Health..Life.Expectancy$ : 
 
 ```{r}
 # On trace le nuage de points
@@ -783,11 +719,10 @@ cat("Coefficient de corrélation r =", round(r, 3), "\n")
 Cette paire de donnée est également une très bonne candidate pour la régression linéaire avec de nouveau un coefficient de corrélation r élevé.
 Ainsi en résumé nous avosn deux paires testées qui sont convenables et adaptées à une régression linéaire (on ne retrouve pas les cas quadratiques, verticaux, les valeurs aberrantes que l'on a observé dans la partie précédente).
 
-Nous choisissons donc le PIB et le Happiness score comme paire de données, car nous souhaitions traiter la question "L'argent fait-il le bonheur ?"
+Nous choisissons donc le PIB et le Happiness score comme paire de données, car nous souhaitons traiter la question "L'argent fait-il le bonheur ?"
 
 
-
-### Q18
+## Q18
 
 Nous avons déjà tracé le nuage de point afin de vérifier graphiquement que notre choix de paire était cohérent. Ajoutons maintenant la droite des moindres carrés sur le graphe ...
 
@@ -810,12 +745,13 @@ abline(reg_reel, col = "red")
 
 Le nuage de points montre une tendance linéaire positive : globalement, plus le PIB par habitant d'un pays est élevé, plus son score de bonheur augmente.
 La droite des moindres carrés (en rouge) traverse le nuage de manière très équilibrée, ce qui montre que le choix d'un modèle linéaire est tout à fait adapté pour capturer cette relation.
+
 On remarque quelques dispersion des points autour de la droite qui nous confirme graphiquement qu'il existe une variabilité et que le PIB n'est pas le seul facteur qui explique le bonheur.
 
-### Q19
+## Q19
 
 
-Nous choisissons également alpha = 0.05 afin de calculer les intervalles de confiances.
+Nous choisissons également $alpha = 0.05$ afin de calculer les intervalles de confiances.
 
 ```{r}
 intervalles_confiance <- confint(reg_reel, level = 0.95)
@@ -824,10 +760,10 @@ print(intervalles_confiance)
 
 
 
-### Q20
+## Q20
 
-On récupère le R² de notre régression linéaire grâce à la fonction summary que nous avons déjà utilisée précédement, et qui nous permet d'avoir accès à de nombreuses informations sur notre régression linéaire, dont le R².
-On peut aussi le recalculer via la formule de l'énoncé du nous dit que R^2 = Sreg/SY2.
+On récupère le ${R}^2$ de notre régression linéaire grâce à la fonction summary que nous avons déjà utilisée précédement, et qui nous permet d'avoir accès à de nombreuses informations sur notre régression linéaire, dont le ${R}^2$.
+On peut aussi le recalculer via la formule de l'énoncé du nous dit que $$R^2=\displaystyle{\frac{S_{reg}}{S_Y^2}}$$.
 
 ```{r}
 r2_reel <- sum_reel$r.squared
@@ -842,11 +778,11 @@ cat("R^2 calculé =", r2_calculé)
 
 
 On obtient bien le même résultat avec les deux méthodes.
-Nous avons un R^2 de ~0,61 montre que la richesse par habitant d'un pays explique à elle seule ~61 % de la variabilité de son score de bonheur mondial.
+Nous avons un ${R}^2$ de ~0,61 montre que la richesse par habitant d'un pays explique à elle seule ~61 % de la variabilité de son score de bonheur mondial.
 
-### Q21
+## Q21
 
-On cherche à vérifier que R^2 est égal au carré du coefficient de corrélation entre les variables x et y. 
+On cherche à vérifier que ${R}^2$ est égal au carré du coefficient de corrélation entre les variables x et y. 
 
 ```{r}
 coef_cor <-cor(x_reel, y_reel, method = "pearson")^2
@@ -856,11 +792,11 @@ cat("R^2 calculé à partir du coefficient de corrélation =", coef_cor)
 
 
 
-On voit bien que les deux méthodes donnent le même résultat, ainsi on confirme que R^2 est égal au carré du coefficient de corrélation entre x et y.
+On voit bien que les deux méthodes donnent le même résultat, ainsi on confirme que ${R}^2$ est égal au carré du coefficient de corrélation entre x et y.
 
-### Q22
+## Q22
 
-On cherche à tester l'hypothèse nulle H0 : b = 0 contre H1 son complémentaire, au niveau de signification alpha = 0.05.
+On cherche à tester l'hypothèse nulle $H_0 : \; b=0$ contre $H1$ son complémentaire, au niveau de signification $alpha = 0.05$.
 
 ```{r}
 #pente estimée
@@ -884,9 +820,9 @@ cat("P-value du test :", p_value, "\n")
 ```
 
 
-La p-value obtenue étant très largement inférieure au seuil de significativité (0.05) et la statistique observée étant supérieure à la valeur critique théorique, nous rejetons  l'hypothèse nulle H0. On en conclut que la pente b est statistiquement non nulle et très significative : il existe un lien linéaire critique et avéré entre le PIB par habitant et le score de bonheur.
+La p-value obtenue étant très largement inférieure au seuil de significativité (0.05) et la statistique observée étant supérieure à la valeur critique théorique, nous rejetons  l'hypothèse nulle $H0$. On en conclut que la pente b est statistiquement non nulle et très significative : il existe un lien linéaire critique et avéré entre le PIB par habitant et le score de bonheur.
 
-### Q23
+## Q23
 On utilise le diagramme quantile-quantile pour vérifier l'hypothèse de normalité des résidus de notre régression linéaire
 
 ```{r}
@@ -899,7 +835,7 @@ qqline(residus, col = "red", lwd = 2)
 Les points du diagramme quantile-quantile suivent de près la droite de référence, avec juste un léger décrochage uniquement aux extrémités. 
 L'hypothèse de normalité des résidus est considérée comme validée de manière satisfaisante.
 
-### Q24
+## Q24
 
 On utilise le graphe des résidus corrigés versus la variable explicative pour vérifier l'indépendance des résidus corrigés et l'hypothèse d'homoscédasticité.
 
@@ -913,10 +849,10 @@ abline(h = 0, lty = 2, col = "red")
 
 
 Le graphique ne montre pas de structure apparente ou de motif prévisible. 
-Les résidus se répartissent de manière aléatoire autour de l'axe y=0.
+Les résidus se répartissent de manière aléatoire autour de l'axe $y=0$.
 L'hypothèse d'indépendance et d'homoscédasticité est acceptée.
 
-### Q25
+## Q25
 
 ```{r}
 new_data <- data.frame(x_reel = c(0.05,0.790))
@@ -931,13 +867,13 @@ print(IC_Y0)
 
 
 D'après les sorties R obtenues, on distingue deux cas selon la valeur du PIB par habitant :
-- Pour un pays fictif avec un PIB par habitant x0 = 0.05 (Ligne 1) :
-    - L'estimation du score de bonheur est = 3.609721.
-    - L'intervalle de prédiction à 95 % pour une nouvelle observation individuelle y0 est [2.170668 ; 5.048774].
-- Pour un pays fictif avec un PIB par habitant x0 = 0.790(Ligne 2) :
-    - L'estimation ponctuelle du score de bonheur est = 5.251209.
-    - L'intervalle de prédiction à 95 % pour une nouvelle observation individuelle y0 est [3.829509 ; 6.672909].
+- Pour un pays fictif avec un PIB par habitant $x0 = 0.05$ (Ligne 1) :
+    - L'estimation du score de bonheur est $= 3.609721$.
+    - L'intervalle de prédiction à $95 %$ pour une nouvelle observation individuelle $y0$ est $[2.170668 ; 5.048774]$.
+- Pour un pays fictif avec un PIB par habitant $x0 = 0.790$(Ligne 2) :
+    - L'estimation ponctuelle du score de bonheur est $= 5.251209$.
+    - L'intervalle de prédiction à $95%$ pour une nouvelle observation individuelle $y0$ est $[3.829509 ; 6.672909]$.
 
 
-### Q26
-En travaillant sur le jeu de données happiness.csv, on a pu montrer qu'il existe bien une relation linéaire entre le PIB par habitant et le score de bonheur, avec un r = 0,78 et un R² d'environ 0,61. Les différentes hypothèses du modèle ont été vérifiées et sont satisfaites. Néanmoins, les 39 % de variabilité non expliquée nous rappellent que d'autres facteurs entrent en jeu dans le bonheur d'une population. Pour répondre à notre question de départ : l'argent contribue clairement au bonheur, mais il ne fait pas tout.
+## Q26
+En travaillant sur le jeu de données happiness.csv, on a pu montrer qu'il existe bien une relation linéaire entre le PIB par habitant et le score de bonheur, avec un $r = 0,78$ et un $R^2$ d'environ $0,61$. Les différentes hypothèses du modèle ont été vérifiées et sont satisfaites. Néanmoins, les $39%$ de variabilité non expliquée nous rappellent que d'autres facteurs entrent en jeu dans le bonheur d'une population. Pour répondre à notre question de départ : l'argent contribue clairement au bonheur, mais il ne fait pas tout.
