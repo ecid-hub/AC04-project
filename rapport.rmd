@@ -1,3 +1,9 @@
+LAMERAND Candice -> 
+ACCOCEBERRY Rosalie -> 
+BELLICAUD Enzo -> 
+
+
+
 ## 2 - Données simulées 
 
 ```{r}
@@ -499,6 +505,9 @@ plot_ICs(intervalles_s_vect, mu = s0, main = "IC pour σ² avec alpha = 0.5")
 Dans ce cas, cela est plus visuel, on voit bien qu'il y a à peu près une moitié d'intervalles qui contiennent la vraie valeur pour chaque coefficient.
 
 
+## 3 - Homoscédasticité, indépendance et normalité des résidus
+
+
 ### Q14
 
 Premièrement nous pouvons afficher les premières lignes du jeu de données Anscombe afin de voir son nombre de colonnes etc ...
@@ -692,6 +701,9 @@ Donc la normalité est violée à cause d'un point aberrant qui influence fortem
 
 
 Donc les 3 hypothèses sont violées, la régression n'a pas de sens ici.
+
+
+## 4 - Jeu de données réelles
 
 ### Q17 
 
