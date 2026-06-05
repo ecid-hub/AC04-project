@@ -225,17 +225,20 @@ Nous réalisons donc une régression linéaire avec le couple (x,y)
 ```{r}
 donnees <- data.frame(varx = x, vary = y)
 reg<-lm(vary~varx, data = donnees)
-summary(reg)
+reg_summary <- summary(reg)
+
+cat("Intercept du lm =", reg$coefficients[1], " | a_estim =", a_estimé, "\n")
+cat("Pente varx du lm =", reg$coefficients[2], " | b_estimé =", b_estimé, "\n")
+cat("Residual std error =", reg_summary$sigma, " | sqrt(s_estimé) =", sqrt(s_estimé), "\n")
 ```
 
 On constate alors :
 
-- **Intercept (Estimate)** est l'estimation de a (a_estim)
+- **Intercept (Estimate)** est l'estimation de a (a_estimé)
 
-- **varx (Estimate)** est l'estimation de b (b_estim)
+- **varx (Estimate)** est l'estimation de b (b_estimé)
 
-- **Residual standard error** est l'estimation de sigma (sqrt(sigma_etim)) 
-
+- **Residual standard error** est l'estimation de sigma (sigma_estimé)
 
 ## Q9
 
@@ -524,7 +527,7 @@ abline(reg2, col = "red")
 ```
 
 
-Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa forme en cloche, quadratique, qui rend la regression linéaire très peu adaptée.
+Ici on observe que la régression linéaire n'est pas du tout adaptée à la forme du jeu de données, notamment du à sa forme quadratique, qui rend la regression linéaire très peu adaptée.
 
 
 **Pour le troisième jeu de données** : 
@@ -652,7 +655,7 @@ Donc les 3 hypothèses sont violées, la régression n'a pas de sens ici.
 
 ## Q17 
 
-Nous choisissons de travailler avec le jeu de données hapiness.csv, car celui ci contient beaucoup de jeux de données numériques (en effet nous ne pouvons pas effectuer un régression linéaire sur des données textuelles). De même il contient beaucoup de colonnes de données ce qui va nous permettre de pouvoir tester différentes paires candidates à une régression linéaire.
+Nous choisissons de travailler avec le jeu de données happiness.csv, car celui ci contient beaucoup de jeux de données numériques (en effet nous ne pouvons pas effectuer un régression linéaire sur des données textuelles). De même il contient beaucoup de colonnes de données ce qui va nous permettre de pouvoir tester différentes paires candidates à une régression linéaire.
 
 Nous commencons par observer les différentes données de ce jeu ...
 
@@ -665,7 +668,7 @@ head(real_data)
 Afin de trouver une paire qui nous convienne, nous pouvons déjà exclure les colonnes qui ne sont pas numériques. Enfin, nous devons également chercher des données qui sont liées entre elles... Pour l'instant une paire assez évidente est : $x = Economy..GDP.per.Capita.$ et $y = Happiness.Score$
 On s'attend à ce qu'un PIB plus élevé soit associé à un score de bonheur plus élevé.
 
-Nous pouvons également tester la paire $x = Economy..GDP.per.Capita.$ et $y = Health..Life.EXpectancy$ ainsi que la paire $x = Happiness.Score$ et $y = Generosity$ qui elles aussi paraissent cohérentes en terme de sens. En effet on peut assumer que plus un pays a un PIB élevé, plus ses citoyens sont en bonne santé, et que plus les gens sont heureux plus ils sont généreux.
+Nous pouvons également tester la paire $x = Economy..GDP.per.Capita.$ et $y = Health..Life.Expectancy$ ainsi que la paire $x = Happiness.Score$ et $y = Generosity$ qui elles aussi paraissent cohérentes en terme de sens. En effet on peut assumer que plus un pays a un PIB élevé, plus ses citoyens sont en bonne santé, et que plus les gens sont heureux plus ils sont généreux.
 
 Nous allons nous en assurer graphiquement...
 
@@ -701,7 +704,7 @@ r <- cor(real_data$Happiness.Score, real_data$Generosity,
 cat("Coefficient de corrélation r =", round(r, 3), "\n")
 ```
 
-On observe que cette présente une très faible corrélation, déjà graphiquement il y a une forte dispoersion des points et surtout le coefficient de corrélation $r = 0.18$. Ainsi ce jeu est un un bien moins bon candidat que le précédent.
+On observe que cette présente une très faible corrélation, déjà graphiquement il y a une forte dispersion des points et surtout le coefficient de corrélation $r = 0.18$. Ainsi ce jeu est un un bien moins bon candidat que le précédent.
 
 Enfin testons la paire $x = Economy..GDP.per.Capita$. et $y = Health..Life.Expectancy$ : 
 
@@ -720,7 +723,7 @@ cat("Coefficient de corrélation r =", round(r, 3), "\n")
 ```
 
 Cette paire de donnée est également une très bonne candidate pour la régression linéaire avec de nouveau un coefficient de corrélation r élevé.
-Ainsi en résumé nous avosn deux paires testées qui sont convenables et adaptées à une régression linéaire (on ne retrouve pas les cas quadratiques, verticaux, les valeurs aberrantes que l'on a observé dans la partie précédente).
+Ainsi en résumé nous avons deux paires testées qui sont convenables et adaptées à une régression linéaire (on ne retrouve pas les cas quadratiques, verticaux, les valeurs aberrantes que l'on a observé dans la partie précédente).
 
 Nous choisissons donc le PIB et le Happiness score comme paire de données, car nous souhaitons traiter la question "L'argent fait-il le bonheur ?"
 
@@ -821,7 +824,7 @@ p_value <- sum_reel$coefficients["x_reel", "Pr(>|t|)"]
 cat("Pente estimée :", b, "\n")
 cat("Écart-type de la pente :", sigma_b, "\n")
 cat("Statistique T observée :", t_obs, "\n")
-cat("Valeur critique critique (|t_th|) :", valeur_critique, "\n")
+cat("Valeur critique (|t_th|) :", valeur_critique, "\n")
 cat("P-value du test :", p_value, "\n")
 ```
 
@@ -862,8 +865,8 @@ L'hypothèse d'indépendance et d'homoscédasticité est acceptée.
 
 ```{r}
 new_data <- data.frame(x_reel = c(0.05,0.790))
-IC_EY0  <- predict(reg_reel, new_data , intperval = "confidence", level = 0.95)
-IC_Y0  <- predict(reg_reel, new_data, interval = "prediction", level = 0.95)
+IC_EY0  <- predict(reg_reel, newdata = new_data , interval = "confidence", level = 0.95)
+IC_Y0  <- predict(reg_reel, newdata = new_data, interval = "prediction", level = 0.95)
 print("Intervalle de confiance pour l'espérance conditionnelle E[Y|X=x0] :")
 print(IC_EY0)
 print("Intervalle de prédiction pour une nouvelle observation Y0 :")
